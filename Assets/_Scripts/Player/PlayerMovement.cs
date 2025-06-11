@@ -9,48 +9,48 @@ namespace JustAnotherMinecraft.Player
     [RequireComponent(typeof(CharacterController))]
     public class PlayerMovement : MonoBehaviour
     {
-        [Header("Settings")]
-        [SerializeField] private float moveSpeed = 5f;
-        [SerializeField] private float jumpHeight = 1.5f;
-
-        [Header("References")] 
+        [Header("References")]
         [SerializeField] CharacterController characterController;
-        
-        Vector2 movementInput;
-        Vector3 playerVelocity;
+
+        [Header("Settings")]
+        [SerializeField] private float _moveSpeed = 5f;
+        [SerializeField] private float _jumpHeight = 1.5f;
+
+        private Vector2 _movementInput;
+        private Vector3 _playerVelocity;
 
         private void Update()
         {
             ProccessMovement();
         }
 
-        void OnMove(InputValue value)
+        private void OnMove(InputValue value)
         {
-            movementInput = value.Get<Vector2>();
+            _movementInput = value.Get<Vector2>();
         }
-        
-        void OnJump(InputValue value)
+
+        private void OnJump(InputValue value)
         {
             if (value.isPressed && characterController.isGrounded)
             {
-                playerVelocity.y = Mathf.Sqrt(2f * -Physics.gravity.y * jumpHeight);
+                _playerVelocity.y = Mathf.Sqrt(2f * -Physics.gravity.y * _jumpHeight);
             }
         }
 
-        void ProccessMovement()
+        private void ProccessMovement()
         {
-            Vector3 movementDirection = transform.forward * movementInput.y + 
-                                        transform.right * movementInput.x;
-            
+            Vector3 movementDirection = transform.forward * _movementInput.y +
+                                        transform.right * _movementInput.x;
+
             movementDirection.Normalize();
-            characterController.Move(movementDirection * (moveSpeed * Time.deltaTime));
+            characterController.Move(movementDirection * (_moveSpeed * Time.deltaTime));
             ApplyGravity();
         }
 
-        void ApplyGravity()
+        private void ApplyGravity()
         {
-            playerVelocity.y += Physics.gravity.y * Time.deltaTime;
-            characterController.Move(playerVelocity * Time.deltaTime);
+            _playerVelocity.y += Physics.gravity.y * Time.deltaTime;
+            characterController.Move(_playerVelocity * Time.deltaTime);
         }
     }
 }

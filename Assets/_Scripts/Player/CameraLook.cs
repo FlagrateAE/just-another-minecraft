@@ -8,15 +8,15 @@ namespace JustAnotherMinecraft.Player
     public class CameraLook : MonoBehaviour
     {
         [Header("References")] 
-        [SerializeField] GameObject playerBody;
-        [SerializeField] Camera playerCamera;
+        [SerializeField] private Camera _playerCamera;
 
         [Header("Settings")] 
-        [SerializeField] float mouseSensitivity = 100f;
+        [SerializeField] private float _mouseSensitivity = 100f;
         
-        float xRotation = 0f;
-        Vector2 mouseInput;
-        void Start()
+        private float _xRotation = 0f;
+        private Vector2 _mouseInput;
+
+        private void Start()
         {
             HideCursor(true);
         }
@@ -26,12 +26,12 @@ namespace JustAnotherMinecraft.Player
             ProccessLook();
         }
 
-        void OnLook(InputValue value)
+        private void OnLook(InputValue value)
         {
-            mouseInput = value.Get<Vector2>();
+            _mouseInput = value.Get<Vector2>();
         }
 
-        void HideCursor(bool hide)
+        private void HideCursor(bool hide)
         {
             if (hide == true)
             {
@@ -45,17 +45,17 @@ namespace JustAnotherMinecraft.Player
             Cursor.visible = !hide;
         }
 
-        void ProccessLook()
+        private void ProccessLook()
         {
-            float mouseX = mouseInput.x * mouseSensitivity * Time.deltaTime;
-            float mouseY = mouseInput.y * mouseSensitivity * Time.deltaTime;
+            float mouseX = _mouseInput.x * _mouseSensitivity * Time.deltaTime;
+            float mouseY = _mouseInput.y * _mouseSensitivity * Time.deltaTime;
             
-            playerBody.transform.Rotate(Vector3.up * mouseX);
+            transform.Rotate(Vector3.up * mouseX);
             
-            xRotation -= mouseY;
-            xRotation = Mathf.Clamp(xRotation, -90f, 90f);
+            _xRotation -= mouseY;
+            _xRotation = Mathf.Clamp(_xRotation, -90f, 90f);
             
-            playerCamera.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+            _playerCamera.transform.localRotation = Quaternion.Euler(_xRotation, 0f, 0f);
         }
 }
 }
