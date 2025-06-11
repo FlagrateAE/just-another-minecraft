@@ -1,23 +1,21 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-[RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
+[RequireComponent(typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider))]
 public class ChunkRenderer : MonoBehaviour
 {
     public const int ChunkWidth = 16;
     public const int ChunkHeight = 64;
     public BlockType[,,] Blocks = new BlockType[ChunkWidth, ChunkHeight, ChunkWidth];
 
-
     private Mesh _chunkMesh;
     private List<Vector3> _vertices = new();
     private List<int> _triangles = new();
 
-
     private void Start()
     {
         _chunkMesh = new Mesh();
-        Blocks[0, 0, 0] = BlockType.Grass;
+        Blocks = TerrainGenerator.GenerateTerrain(0, 0);
 
         for (int y = 0; y < ChunkHeight; y++)
         {
@@ -38,8 +36,10 @@ public class ChunkRenderer : MonoBehaviour
 
         _chunkMesh.RecalculateNormals();
         _chunkMesh.RecalculateBounds();
+        _chunkMesh.Optimize();
 
         GetComponent<MeshFilter>().mesh = _chunkMesh;
+        GetComponent<MeshCollider>().sharedMesh = _chunkMesh;
     }
 
     public BlockType GetBlockAtPosition(Vector3Int position)
