@@ -19,7 +19,7 @@ public static class TerrainGenerator
 
                 for (int y = 0; y < height; y++)
                 {
-                    result[x, y, z] = BlockType.Grass;
+                    result[x, y, z] = BlockType.Dirt;
                 }
             }
         }

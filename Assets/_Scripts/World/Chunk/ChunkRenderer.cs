@@ -9,8 +9,11 @@ public class ChunkRenderer : MonoBehaviour
     public BlockType[,,] Blocks = new BlockType[ChunkWidth, ChunkHeight, ChunkWidth];
 
     private Mesh _chunkMesh;
-    private List<Vector3> _vertices = new();
-    private List<int> _triangles = new();
+    private readonly List<Vector3> _vertices = new();
+    private readonly List<Vector2> _uvs = new();
+    private readonly List<int> _triangles = new();
+
+    [SerializeField] GameObject blockPrefab;
 
     private void Start()
     {
@@ -27,11 +30,14 @@ public class ChunkRenderer : MonoBehaviour
                     BlockType block = GetBlockAtPosition(position);
 
                     GenerateBlock(position, block);
+
+                    // Instantiate(blockPrefab, new Vector3(x, y, z), Quaternion.identity);
                 }
             }
         }
 
         _chunkMesh.vertices = _vertices.ToArray();
+        _chunkMesh.uv = _uvs.ToArray();
         _chunkMesh.triangles = _triangles.ToArray();
 
         _chunkMesh.RecalculateNormals();
@@ -52,7 +58,7 @@ public class ChunkRenderer : MonoBehaviour
         }
         else
         {
-            return BlockType.Air;
+            return BlockType.Dirt;
         }
     }
 
@@ -131,6 +137,12 @@ public class ChunkRenderer : MonoBehaviour
 
     private void AddLastSquareVertices()
     {
+        _uvs.Add(new Vector2(0, 0));
+        _uvs.Add(new Vector2(0, 1));
+        _uvs.Add(new Vector2(1, 0));
+        _uvs.Add(new Vector2(1, 1));
+
+
         _triangles.Add(_vertices.Count - 4);
         _triangles.Add(_vertices.Count - 3);
         _triangles.Add(_vertices.Count - 2);
