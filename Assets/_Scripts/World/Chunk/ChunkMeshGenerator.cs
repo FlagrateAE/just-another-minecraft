@@ -1,24 +1,24 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+[RequireComponent(typeof(Chunk))]
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider))]
-public class ChunkRenderer : MonoBehaviour
+public class ChunkMeshGenerator : MonoBehaviour
 {
-    public Chunk Chunk { get; private set; }
-
+    private Chunk _chunk;
     private Mesh _chunkMesh;
     private readonly List<Vector3> _vertices = new();
     private readonly List<Vector2> _uvs = new();
     private readonly List<int> _triangles = new();
 
-    public void LoadChunk(Chunk chunk) => Chunk = chunk;
-
     private void Start()
     {
-        RenderChunk();
+        _chunk = GetComponent<Chunk>();
+
+        Regenerate();
     }
 
-    public void RenderChunk()
+    public void Regenerate()
     {
         _vertices.Clear();
         _uvs.Clear();
@@ -32,9 +32,9 @@ public class ChunkRenderer : MonoBehaviour
                 for (int z = 0; z < Chunk.Width; z++)
                 {
                     Vector3Int position = new(x, y, z);
-                    BlockType block = Chunk.GetBlock(position);
+                    BlockType block = _chunk.GetBlock(position);
 
-                    RenderBlock(position, block);
+                    GenerateBlock(position, block);
                 }
             }
         }
@@ -51,16 +51,16 @@ public class ChunkRenderer : MonoBehaviour
         GetComponent<MeshCollider>().sharedMesh = _chunkMesh;
     }
 
-    private void RenderBlock(Vector3Int position, BlockType blockType)
+    private void GenerateBlock(Vector3Int position, BlockType blockType)
     {
         if (blockType == BlockType.Air) return;
 
-        if (Chunk.GetBlockChecked(position + Vector3Int.right) == 0) GenerateRightSide(position);
-        if (Chunk.GetBlockChecked(position + Vector3Int.left) == 0) GenerateLeftSide(position);
-        if (Chunk.GetBlockChecked(position + Vector3Int.forward) == 0) GenerateFrontSide(position);
-        if (Chunk.GetBlockChecked(position + Vector3Int.back) == 0) GenerateBackSide(position);
-        if (Chunk.GetBlockChecked(position + Vector3Int.up) == 0) GenerateTopSide(position);
-        if (Chunk.GetBlockChecked(position + Vector3Int.down) == 0) GenerateBottomSide(position);
+        if (_chunk.GetBlockChecked(position + Vector3Int.right) == 0) GenerateRightSide(position);
+        if (_chunk.GetBlockChecked(position + Vector3Int.left) == 0) GenerateLeftSide(position);
+        if (_chunk.GetBlockChecked(position + Vector3Int.forward) == 0) GenerateFrontSide(position);
+        if (_chunk.GetBlockChecked(position + Vector3Int.back) == 0) GenerateBackSide(position);
+        if (_chunk.GetBlockChecked(position + Vector3Int.up) == 0) GenerateTopSide(position);
+        if (_chunk.GetBlockChecked(position + Vector3Int.down) == 0) GenerateBottomSide(position);
     }
 
     private void GenerateRightSide(Vector3Int blockPosition)

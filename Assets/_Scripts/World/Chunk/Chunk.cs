@@ -1,23 +1,35 @@
 using UnityEditor;
 using UnityEngine;
 
-public class Chunk
+public class Chunk : MonoBehaviour
 {
     public const int Width = 16;
     public const int Height = 64;
 
-    public readonly Vector2Int Position;
-    public readonly BlockType[,,] Blocks;
+    public Vector2Int ChunkPosition;
+    public BlockType[,,] Blocks;
 
-    private readonly World _world;
-    private readonly ChunkRenderer _renderer;
+    private World _world;
+    private ChunkMeshGenerator _generator;
 
-    public Chunk(World world, Vector2Int position, BlockType[,,] blocks, ChunkRenderer renderer)
+    // public Chunk(World world, Vector2Int position, BlockType[,,] blocks, ChunkMeshGenerator renderer)
+    // {
+    //     _world = world;
+    //     Position = position;
+    //     Blocks = blocks;
+    //     _renderer = renderer;
+    // }
+
+    private void Start()
     {
-        _world = world;
-        Position = position;
+        _world = transform.parent.GetComponent<World>();
+        _generator = GetComponent<ChunkMeshGenerator>();
+    }
+
+    public void LoadData(Vector2Int chunkPosition, BlockType[,,] blocks)
+    {
+        ChunkPosition = chunkPosition;
         Blocks = blocks;
-        _renderer = renderer;
     }
 
     public BlockType GetBlock(Vector3Int blockPosition)
@@ -35,7 +47,7 @@ public class Chunk
         {
             if (blockPosition.y < 0 || blockPosition.y >= Height) return BlockType.Air;
 
-            Vector2Int adjacentChunkPosition = Position;
+            Vector2Int adjacentChunkPosition = ChunkPosition;
 
             if (blockPosition.x < 0)
             {
@@ -79,7 +91,7 @@ public class Chunk
     public void SetBlock(Vector3Int blockPosition, BlockType blockType)
     {
         Blocks[blockPosition.x, blockPosition.y, blockPosition.z] = blockType;
-        _renderer.RenderChunk();
+        _generator.Regenerate();
     }
 }
 
