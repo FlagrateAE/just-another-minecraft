@@ -1,11 +1,14 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
 public class World : MonoBehaviour
 {
     [SerializeField] private GameObject _chunkPrefab;
 
     public readonly Dictionary<Vector2Int, Chunk> Chunks = new();
+
+    [Inject] BlockDatabase _blocksDb;
 
     private void Start()
     {
@@ -41,9 +44,9 @@ public class World : MonoBehaviour
         }
     }
 
-    public void SetBlock(Vector3Int position, BlockId block)
+    public void PlaceBlock(Vector3Int position, BlockId block)
     {
-        Vector2Int chunkPosition = GlobalPositionToChunk(position);
+        Vector2Int chunkPosition = GlobalToChunkPosition(position);
 
         Vector3Int localPosition = new(
             position.x - chunkPosition.x * Chunk.Width,
@@ -54,7 +57,20 @@ public class World : MonoBehaviour
         Chunks[chunkPosition].SetBlock(localPosition, block);
     }
 
-    private Vector2Int GlobalPositionToChunk(Vector3Int position)
+    public void BreakBlock(Vector3Int position)
+    {
+        Vector2Int chunkPosition = GlobalToChunkPosition(position);
+
+        Vector3Int localPosition = new(
+            position.x - chunkPosition.x * Chunk.Width,
+            position.y,
+            position.z - chunkPosition.y * Chunk.Width
+        );
+
+        Chunks[chunkPosition].RemoveBlock(localPosition);
+    }
+
+    private Vector2Int GlobalToChunkPosition(Vector3Int position)
     {
         return new(position.x / Chunk.Width, position.z / Chunk.Width);
     }

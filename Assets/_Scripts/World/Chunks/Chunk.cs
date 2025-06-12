@@ -1,4 +1,3 @@
-using UnityEditor;
 using UnityEngine;
 
 public class Chunk : MonoBehaviour
@@ -80,9 +79,16 @@ public class Chunk : MonoBehaviour
         localPosition.y >= 0 && localPosition.y < Height &&
         localPosition.z >= 0 && localPosition.z < Width;
 
-    public void SetBlock(Vector3Int blockPosition, BlockId block)
+
+    public void SetBlock(Vector3Int position, BlockId block)
     {
-        Blocks[blockPosition.x, blockPosition.y, blockPosition.z] = block;
+        Blocks[position.x, position.y, position.z] = block;
+        _generator.Regenerate();
+    }
+
+    public void RemoveBlock(Vector3Int position)
+    {
+        Blocks[position.x, position.y, position.z] = BlockId.Air;
         _generator.Regenerate();
     }
 }
