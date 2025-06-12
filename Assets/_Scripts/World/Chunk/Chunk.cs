@@ -1,3 +1,4 @@
+using UnityEditor;
 using UnityEngine;
 
 public class Chunk
@@ -9,12 +10,14 @@ public class Chunk
     public readonly BlockType[,,] Blocks;
 
     private readonly World _world;
+    private readonly ChunkRenderer _renderer;
 
-    public Chunk(World world, Vector2Int position, BlockType[,,] blocks)
+    public Chunk(World world, Vector2Int position, BlockType[,,] blocks, ChunkRenderer renderer)
     {
         _world = world;
         Position = position;
         Blocks = blocks;
+        _renderer = renderer;
     }
 
     public BlockType GetBlock(Vector3Int blockPosition)
@@ -72,6 +75,12 @@ public class Chunk
         localPosition.x >= 0 && localPosition.x < Width &&
         localPosition.y >= 0 && localPosition.y < Height &&
         localPosition.z >= 0 && localPosition.z < Width;
+
+    public void SetBlock(Vector3Int blockPosition, BlockType blockType)
+    {
+        Blocks[blockPosition.x, blockPosition.y, blockPosition.z] = blockType;
+        _renderer.RenderChunk();
+    }
 }
 
 

@@ -11,10 +11,18 @@ public class ChunkRenderer : MonoBehaviour
     private readonly List<Vector2> _uvs = new();
     private readonly List<int> _triangles = new();
 
-    public void SetChunk(Chunk chunk) => Chunk = chunk;
+    public void LoadChunk(Chunk chunk) => Chunk = chunk;
 
     private void Start()
     {
+        RenderChunk();
+    }
+
+    public void RenderChunk()
+    {
+        _vertices.Clear();
+        _uvs.Clear();
+        _triangles.Clear();
         _chunkMesh = new Mesh();
 
         for (int y = 0; y < Chunk.Height; y++)
@@ -42,7 +50,6 @@ public class ChunkRenderer : MonoBehaviour
         GetComponent<MeshFilter>().mesh = _chunkMesh;
         GetComponent<MeshCollider>().sharedMesh = _chunkMesh;
     }
-
 
     private void RenderBlock(Vector3Int position, BlockType blockType)
     {
@@ -132,5 +139,4 @@ public class ChunkRenderer : MonoBehaviour
         _triangles.Add(_vertices.Count - 1);
         _triangles.Add(_vertices.Count - 2);
     }
-
 }
