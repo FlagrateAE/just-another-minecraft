@@ -12,14 +12,6 @@ public class Chunk : MonoBehaviour
     private World _world;
     private ChunkMeshGenerator _generator;
 
-    // public Chunk(World world, Vector2Int position, BlockType[,,] blocks, ChunkMeshGenerator renderer)
-    // {
-    //     _world = world;
-    //     Position = position;
-    //     Blocks = blocks;
-    //     _renderer = renderer;
-    // }
-
     private void Start()
     {
         _world = transform.parent.GetComponent<World>();

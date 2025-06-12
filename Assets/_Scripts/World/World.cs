@@ -43,17 +43,19 @@ public class World : MonoBehaviour
 
     public void SetBlock(Vector3Int position, BlockType blockType)
     {
-        Chunk chunk = GetChunkFromGlobalPosition(position);
-        chunk.SetBlock(position, blockType);
+        Vector2Int chunkPosition = GlobalPositionToChunk(position);
+
+        Vector3Int localPosition = new(
+            position.x - chunkPosition.x * Chunk.Width,
+            position.y,
+            position.z - chunkPosition.y * Chunk.Width
+        );
+
+        Chunks[chunkPosition].SetBlock(localPosition, blockType);
     }
 
-    private Chunk GetChunkFromGlobalPosition(Vector3Int position)
+    private Vector2Int GlobalPositionToChunk(Vector3Int position)
     {
-        return Chunks[
-            new Vector2Int(
-                position.x / Chunk.Width,
-                position.z / Chunk.Width
-            )
-        ];
+        return new(position.x / Chunk.Width, position.z / Chunk.Width);
     }
 }
