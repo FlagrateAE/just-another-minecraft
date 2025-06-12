@@ -4,34 +4,29 @@ using System.Collections.Generic;
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider))]
 public class ChunkRenderer : MonoBehaviour
 {
-    public const int ChunkWidth = 16;
-    public const int ChunkHeight = 64;
-    public BlockType[,,] Blocks = new BlockType[ChunkWidth, ChunkHeight, ChunkWidth];
+    public Chunk Chunk { get; private set; }
 
     private Mesh _chunkMesh;
     private readonly List<Vector3> _vertices = new();
     private readonly List<Vector2> _uvs = new();
     private readonly List<int> _triangles = new();
 
-    [SerializeField] GameObject blockPrefab;
+    public void SetChunk(Chunk chunk) => Chunk = chunk;
 
     private void Start()
     {
         _chunkMesh = new Mesh();
-        Blocks = TerrainGenerator.GenerateTerrain(0, 0);
 
-        for (int y = 0; y < ChunkHeight; y++)
+        for (int y = 0; y < Chunk.Height; y++)
         {
-            for (int x = 0; x < ChunkWidth; x++)
+            for (int x = 0; x < Chunk.Width; x++)
             {
-                for (int z = 0; z < ChunkWidth; z++)
+                for (int z = 0; z < Chunk.Width; z++)
                 {
                     Vector3Int position = new(x, y, z);
-                    BlockType block = GetBlockAtPosition(position);
+                    BlockType block = Chunk.GetBlock(position);
 
-                    GenerateBlock(position, block);
-
-                    // Instantiate(blockPrefab, new Vector3(x, y, z), Quaternion.identity);
+                    RenderBlock(position, block);
                 }
             }
         }
@@ -48,31 +43,17 @@ public class ChunkRenderer : MonoBehaviour
         GetComponent<MeshCollider>().sharedMesh = _chunkMesh;
     }
 
-    public BlockType GetBlockAtPosition(Vector3Int position)
-    {
-        if (position.x >= 0 && position.x < ChunkWidth &&
-            position.y >= 0 && position.y < ChunkHeight &&
-            position.z >= 0 && position.z < ChunkWidth)
-        {
-            return Blocks[position.x, position.y, position.z];
-        }
-        else
-        {
-            return BlockType.Dirt;
-        }
-    }
 
-
-    private void GenerateBlock(Vector3Int position, BlockType blockType)
+    private void RenderBlock(Vector3Int position, BlockType blockType)
     {
         if (blockType == BlockType.Air) return;
 
-        if (GetBlockAtPosition(position + Vector3Int.right) == 0) GenerateRightSide(position);
-        if (GetBlockAtPosition(position + Vector3Int.left) == 0) GenerateLeftSide(position);
-        if (GetBlockAtPosition(position + Vector3Int.forward) == 0) GenerateFrontSide(position);
-        if (GetBlockAtPosition(position + Vector3Int.back) == 0) GenerateBackSide(position);
-        if (GetBlockAtPosition(position + Vector3Int.up) == 0) GenerateTopSide(position);
-        if (GetBlockAtPosition(position + Vector3Int.down) == 0) GenerateBottomSide(position);
+        if (Chunk.GetBlockChecked(position + Vector3Int.right) == 0) GenerateRightSide(position);
+        if (Chunk.GetBlockChecked(position + Vector3Int.left) == 0) GenerateLeftSide(position);
+        if (Chunk.GetBlockChecked(position + Vector3Int.forward) == 0) GenerateFrontSide(position);
+        if (Chunk.GetBlockChecked(position + Vector3Int.back) == 0) GenerateBackSide(position);
+        if (Chunk.GetBlockChecked(position + Vector3Int.up) == 0) GenerateTopSide(position);
+        if (Chunk.GetBlockChecked(position + Vector3Int.down) == 0) GenerateBottomSide(position);
     }
 
     private void GenerateRightSide(Vector3Int blockPosition)
