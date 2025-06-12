@@ -7,7 +7,7 @@ public class Chunk : MonoBehaviour
     public const int Height = 64;
 
     public Vector2Int ChunkPosition;
-    public BlockType[,,] Blocks;
+    public BlockId[,,] Blocks;
 
     private World _world;
     private ChunkMeshGenerator _generator;
@@ -18,18 +18,18 @@ public class Chunk : MonoBehaviour
         _generator = GetComponent<ChunkMeshGenerator>();
     }
 
-    public void LoadData(Vector2Int chunkPosition, BlockType[,,] blocks)
+    public void LoadData(Vector2Int chunkPosition, BlockId[,,] blocks)
     {
         ChunkPosition = chunkPosition;
         Blocks = blocks;
     }
 
-    public BlockType GetBlock(Vector3Int blockPosition)
+    public BlockId GetBlock(Vector3Int blockPosition)
     {
         return Blocks[blockPosition.x, blockPosition.y, blockPosition.z];
     }
 
-    public BlockType GetBlockChecked(Vector3Int blockPosition)
+    public BlockId GetBlockChecked(Vector3Int blockPosition)
     {
         if (IsPositionInChunk(blockPosition))
         {
@@ -37,7 +37,7 @@ public class Chunk : MonoBehaviour
         }
         else
         {
-            if (blockPosition.y < 0 || blockPosition.y >= Height) return BlockType.Air;
+            if (blockPosition.y < 0 || blockPosition.y >= Height) return BlockId.Air;
 
             Vector2Int adjacentChunkPosition = ChunkPosition;
 
@@ -69,7 +69,7 @@ public class Chunk : MonoBehaviour
             }
             else
             {
-                return BlockType.Air;
+                return BlockId.Air;
             }
 
         }
@@ -80,9 +80,9 @@ public class Chunk : MonoBehaviour
         localPosition.y >= 0 && localPosition.y < Height &&
         localPosition.z >= 0 && localPosition.z < Width;
 
-    public void SetBlock(Vector3Int blockPosition, BlockType blockType)
+    public void SetBlock(Vector3Int blockPosition, BlockId block)
     {
-        Blocks[blockPosition.x, blockPosition.y, blockPosition.z] = blockType;
+        Blocks[blockPosition.x, blockPosition.y, blockPosition.z] = block;
         _generator.Regenerate();
     }
 }

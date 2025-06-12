@@ -33,7 +33,7 @@ public class PlayerInteraction : MonoBehaviour
             {
                 Vector3Int blockGlobalPosition = Vector3Int.FloorToInt(hitInfo.point + hitInfo.normal / 2);
 
-                _world.SetBlock(blockGlobalPosition, BlockType.Dirt);
+                _world.SetBlock(blockGlobalPosition, BlockId.Dirt);
             }
         }
     }

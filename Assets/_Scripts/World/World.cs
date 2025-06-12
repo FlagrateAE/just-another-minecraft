@@ -12,7 +12,7 @@ public class World : MonoBehaviour
         int xGlobalPosition;
         int zGlobalPosition;
 
-        BlockType[,,] terrain;
+        BlockId[,,] terrain;
         Vector2Int chunkPosition;
 
         for (int x = 0; x < 10; x++)
@@ -41,7 +41,7 @@ public class World : MonoBehaviour
         }
     }
 
-    public void SetBlock(Vector3Int position, BlockType blockType)
+    public void SetBlock(Vector3Int position, BlockId block)
     {
         Vector2Int chunkPosition = GlobalPositionToChunk(position);
 
@@ -51,7 +51,7 @@ public class World : MonoBehaviour
             position.z - chunkPosition.y * Chunk.Width
         );
 
-        Chunks[chunkPosition].SetBlock(localPosition, blockType);
+        Chunks[chunkPosition].SetBlock(localPosition, block);
     }
 
     private Vector2Int GlobalPositionToChunk(Vector3Int position)

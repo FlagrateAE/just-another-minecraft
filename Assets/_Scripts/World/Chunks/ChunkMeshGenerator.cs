@@ -32,7 +32,7 @@ public class ChunkMeshGenerator : MonoBehaviour
                 for (int z = 0; z < Chunk.Width; z++)
                 {
                     Vector3Int position = new(x, y, z);
-                    BlockType block = _chunk.GetBlock(position);
+                    BlockId block = _chunk.GetBlock(position);
 
                     GenerateBlock(position, block);
                 }
@@ -51,9 +51,9 @@ public class ChunkMeshGenerator : MonoBehaviour
         GetComponent<MeshCollider>().sharedMesh = _chunkMesh;
     }
 
-    private void GenerateBlock(Vector3Int position, BlockType blockType)
+    private void GenerateBlock(Vector3Int position, BlockId block)
     {
-        if (blockType == BlockType.Air) return;
+        if (block == BlockId.Air) return;
 
         if (_chunk.GetBlockChecked(position + Vector3Int.right) == 0) GenerateRightSide(position);
         if (_chunk.GetBlockChecked(position + Vector3Int.left) == 0) GenerateLeftSide(position);
