@@ -83,7 +83,10 @@ public class ChunkMeshGenerator : MonoBehaviour
 
         var (uv00, uv11) = CalculateUVs(textureData.GetTexturePosition(Face.Front));
 
-        AddFaceUVsFlipped(uv00, uv11);
+        _uvs.Add(new Vector2(uv11.x, uv00.y));
+        _uvs.Add(new Vector2(uv00.x, uv00.y));
+        _uvs.Add(new Vector2(uv11.x, uv11.y));
+        _uvs.Add(new Vector2(uv00.x, uv11.y));
         AddTriangles();
     }
 
@@ -96,7 +99,10 @@ public class ChunkMeshGenerator : MonoBehaviour
 
         var (uv00, uv11) = CalculateUVs(textureData.GetTexturePosition(Face.Back));
 
-        AddFaceUVsOrtho(uv00, uv11);
+        _uvs.Add(new Vector2(uv00.x, uv00.y));
+        _uvs.Add(new Vector2(uv00.x, uv11.y));
+        _uvs.Add(new Vector2(uv11.x, uv00.y));
+        _uvs.Add(new Vector2(uv11.x, uv11.y));
         AddTriangles();
     }
 
@@ -109,7 +115,10 @@ public class ChunkMeshGenerator : MonoBehaviour
 
         var (uv00, uv11) = CalculateUVs(textureData.GetTexturePosition(Face.Left));
 
-        AddFaceUVsFlipped(uv00, uv11);
+        _uvs.Add(new Vector2(uv11.x, uv00.y));
+        _uvs.Add(new Vector2(uv00.x, uv00.y));
+        _uvs.Add(new Vector2(uv11.x, uv11.y));
+        _uvs.Add(new Vector2(uv00.x, uv11.y));
         AddTriangles();
     }
 
@@ -122,7 +131,10 @@ public class ChunkMeshGenerator : MonoBehaviour
 
         var (uv00, uv11) = CalculateUVs(textureData.GetTexturePosition(Face.Right));
 
-        AddFaceUVsOrtho(uv00, uv11);
+        _uvs.Add(new Vector2(uv00.x, uv00.y));
+        _uvs.Add(new Vector2(uv00.x, uv11.y));
+        _uvs.Add(new Vector2(uv11.x, uv00.y));
+        _uvs.Add(new Vector2(uv11.x, uv11.y));
         AddTriangles();
     }
 
@@ -135,7 +147,10 @@ public class ChunkMeshGenerator : MonoBehaviour
 
         var (uv00, uv11) = CalculateUVs(textureData.GetTexturePosition(Face.Top));
 
-        AddFaceUVsOrtho(uv00, uv11);
+        _uvs.Add(new Vector2(uv00.x, uv11.y));
+        _uvs.Add(new Vector2(uv00.x, uv00.y));
+        _uvs.Add(new Vector2(uv11.x, uv11.y));
+        _uvs.Add(new Vector2(uv11.x, uv00.y)); 
         AddTriangles();
     }
 
@@ -148,24 +163,11 @@ public class ChunkMeshGenerator : MonoBehaviour
 
         var (uv00, uv11) = CalculateUVs(textureData.GetTexturePosition(Face.Bottom));
 
-        AddFaceUVsFlipped(uv00, uv11);
+        _uvs.Add(new Vector2(uv11.x, uv00.y));
+        _uvs.Add(new Vector2(uv00.x, uv00.y));
+        _uvs.Add(new Vector2(uv11.x, uv11.y));
+        _uvs.Add(new Vector2(uv00.x, uv11.y));
         AddTriangles();
-    }
-
-    private void AddFaceUVsOrtho(Vector2 uv00, Vector2 uv11)
-    {
-        _uvs.Add(new Vector2(uv00.x, uv00.y));
-        _uvs.Add(new Vector2(uv00.x, uv11.y));
-        _uvs.Add(new Vector2(uv11.x, uv00.y));
-        _uvs.Add(new Vector2(uv11.x, uv11.y));
-    }
-
-    private void AddFaceUVsFlipped(Vector2 uv00, Vector2 uv11)
-    {
-        _uvs.Add(new Vector2(uv11.x, uv00.y));
-        _uvs.Add(new Vector2(uv00.x, uv00.y));
-        _uvs.Add(new Vector2(uv11.x, uv11.y));
-        _uvs.Add(new Vector2(uv00.x, uv11.y));
     }
 
     private (Vector2, Vector2) CalculateUVs(Vector2Int texturePosition)
