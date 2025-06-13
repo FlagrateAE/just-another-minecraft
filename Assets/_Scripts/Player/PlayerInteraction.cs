@@ -21,7 +21,7 @@ public class PlayerInteraction : MonoBehaviour
             {
                 Vector3Int blockGlobalPosition = Vector3Int.FloorToInt(hitInfo.point + hitInfo.normal / 2);
 
-                _world.PlaceBlock(blockGlobalPosition, BlockId.Dirt);
+                _world.PlaceBlock(blockGlobalPosition, BlockId.OakPlanks);
             }
         }
     }

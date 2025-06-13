@@ -8,7 +8,7 @@ public class World : MonoBehaviour
 
     public readonly Dictionary<Vector2Int, Chunk> Chunks = new();
 
-    [Inject] BlockDatabase _blocksDb;
+    [Inject] private BlockRegistry _blocksRegistry;
 
     private void Start()
     {
@@ -37,7 +37,7 @@ public class World : MonoBehaviour
                 )
                 .GetComponent<Chunk>();
 
-                chunk.LoadData(chunkPosition, terrain);
+                chunk.Initialize(chunkPosition, terrain, _blocksRegistry);
 
                 Chunks.Add(chunk.ChunkPosition, chunk);
             }

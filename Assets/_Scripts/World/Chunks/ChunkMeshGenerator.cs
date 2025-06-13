@@ -1,20 +1,24 @@
 using UnityEngine;
 using System.Collections.Generic;
+using Zenject;
 
 [RequireComponent(typeof(Chunk))]
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider))]
 public class ChunkMeshGenerator : MonoBehaviour
 {
+    private BlockRegistry _blockRegistry;
+
     private Chunk _chunk;
     private Mesh _chunkMesh;
     private readonly List<Vector3> _vertices = new();
     private readonly List<Vector2> _uvs = new();
     private readonly List<int> _triangles = new();
 
+    public void LoadData(BlockRegistry blockRegistry) => _blockRegistry = blockRegistry;
+
     private void Start()
     {
         _chunk = GetComponent<Chunk>();
-
         Regenerate();
     }
 
@@ -45,7 +49,6 @@ public class ChunkMeshGenerator : MonoBehaviour
 
         _chunkMesh.RecalculateNormals();
         _chunkMesh.RecalculateBounds();
-        _chunkMesh.Optimize();
 
         GetComponent<MeshFilter>().mesh = _chunkMesh;
         GetComponent<MeshCollider>().sharedMesh = _chunkMesh;
@@ -55,88 +58,109 @@ public class ChunkMeshGenerator : MonoBehaviour
     {
         if (block == BlockId.Air) return;
 
-        if (_chunk.GetBlockChecked(position + Vector3Int.right) == 0) GenerateRightSide(position);
-        if (_chunk.GetBlockChecked(position + Vector3Int.left) == 0) GenerateLeftSide(position);
-        if (_chunk.GetBlockChecked(position + Vector3Int.forward) == 0) GenerateFrontSide(position);
-        if (_chunk.GetBlockChecked(position + Vector3Int.back) == 0) GenerateBackSide(position);
-        if (_chunk.GetBlockChecked(position + Vector3Int.up) == 0) GenerateTopSide(position);
-        if (_chunk.GetBlockChecked(position + Vector3Int.down) == 0) GenerateBottomSide(position);
+        var textureData = _blockRegistry.GetTextureData(block);
+
+        if (_chunk.GetBlockChecked(position + Vector3Int.right) == BlockId.Air)
+            GenerateRightSide(position, block, textureData);
+        if (_chunk.GetBlockChecked(position + Vector3Int.left) == BlockId.Air)
+            GenerateLeftSide(position, block, textureData);
+        if (_chunk.GetBlockChecked(position + Vector3Int.forward) == BlockId.Air)
+            GenerateFrontSide(position, block, textureData);
+        if (_chunk.GetBlockChecked(position + Vector3Int.back) == BlockId.Air)
+            GenerateBackSide(position, block, textureData);
+        if (_chunk.GetBlockChecked(position + Vector3Int.up) == BlockId.Air)
+            GenerateTopSide(position, block, textureData);
+        if (_chunk.GetBlockChecked(position + Vector3Int.down) == BlockId.Air)
+            GenerateBottomSide(position, block, textureData);
     }
 
-    private void GenerateRightSide(Vector3Int blockPosition)
+    private void GenerateRightSide(Vector3Int blockPosition, BlockId block, BlockTextureData textureData)
     {
         _vertices.Add(new Vector3(1, 0, 0) + blockPosition);
         _vertices.Add(new Vector3(1, 1, 0) + blockPosition);
         _vertices.Add(new Vector3(1, 0, 1) + blockPosition);
         _vertices.Add(new Vector3(1, 1, 1) + blockPosition);
 
-        AddLastSquareVertices();
+        AddFaceUVs(textureData.GetTexturePosition(Face.Right));
+        AddTriangles();
     }
 
-    private void GenerateLeftSide(Vector3Int blockPosition)
+    private void GenerateLeftSide(Vector3Int blockPosition, BlockId block, BlockTextureData textureData)
     {
         _vertices.Add(new Vector3(0, 0, 0) + blockPosition);
         _vertices.Add(new Vector3(0, 0, 1) + blockPosition);
         _vertices.Add(new Vector3(0, 1, 0) + blockPosition);
         _vertices.Add(new Vector3(0, 1, 1) + blockPosition);
 
-        AddLastSquareVertices();
+        AddFaceUVs(textureData.GetTexturePosition(Face.Left));
+        AddTriangles();
     }
 
-    private void GenerateFrontSide(Vector3Int blockPosition)
+    private void GenerateFrontSide(Vector3Int blockPosition, BlockId block, BlockTextureData textureData)
     {
         _vertices.Add(new Vector3(0, 0, 1) + blockPosition);
         _vertices.Add(new Vector3(1, 0, 1) + blockPosition);
         _vertices.Add(new Vector3(0, 1, 1) + blockPosition);
         _vertices.Add(new Vector3(1, 1, 1) + blockPosition);
 
-        AddLastSquareVertices();
+        AddFaceUVs(textureData.GetTexturePosition(Face.Front));
+        AddTriangles();
     }
 
-    private void GenerateBackSide(Vector3Int blockPosition)
+    private void GenerateBackSide(Vector3Int blockPosition, BlockId block, BlockTextureData textureData)
     {
         _vertices.Add(new Vector3(0, 0, 0) + blockPosition);
         _vertices.Add(new Vector3(0, 1, 0) + blockPosition);
         _vertices.Add(new Vector3(1, 0, 0) + blockPosition);
         _vertices.Add(new Vector3(1, 1, 0) + blockPosition);
 
-        AddLastSquareVertices();
+        AddFaceUVs(textureData.GetTexturePosition(Face.Back));
+        AddTriangles();
     }
 
-    private void GenerateTopSide(Vector3Int blockPosition)
+    private void GenerateTopSide(Vector3Int blockPosition, BlockId block, BlockTextureData textureData)
     {
         _vertices.Add(new Vector3(0, 1, 0) + blockPosition);
         _vertices.Add(new Vector3(0, 1, 1) + blockPosition);
         _vertices.Add(new Vector3(1, 1, 0) + blockPosition);
         _vertices.Add(new Vector3(1, 1, 1) + blockPosition);
 
-        AddLastSquareVertices();
+        AddFaceUVs(textureData.GetTexturePosition(Face.Top));
+        AddTriangles();
     }
 
-    private void GenerateBottomSide(Vector3Int blockPosition)
+    private void GenerateBottomSide(Vector3Int blockPosition, BlockId block, BlockTextureData textureData)
     {
         _vertices.Add(new Vector3(0, 0, 0) + blockPosition);
         _vertices.Add(new Vector3(1, 0, 0) + blockPosition);
         _vertices.Add(new Vector3(0, 0, 1) + blockPosition);
         _vertices.Add(new Vector3(1, 0, 1) + blockPosition);
 
-        AddLastSquareVertices();
+        AddFaceUVs(textureData.GetTexturePosition(Face.Bottom));
+        AddTriangles();
     }
 
-    private void AddLastSquareVertices()
+    private void AddFaceUVs(Vector2Int texturePosition)
     {
-        _uvs.Add(new Vector2(0, 0));
-        _uvs.Add(new Vector2(0, 1));
-        _uvs.Add(new Vector2(1, 0));
-        _uvs.Add(new Vector2(1, 1));
+        float ts = 1f / BlockTextureData.AtlasColumns;
+        int maxRow = BlockTextureData.AtlasRows - 1;
+        Vector2 uv00 = new Vector2(texturePosition.x * ts, (maxRow - texturePosition.y) * ts);
+        Vector2 uv11 = uv00 + new Vector2(ts, ts);
 
+        _uvs.Add(new Vector2(uv00.x, uv00.y));
+        _uvs.Add(new Vector2(uv00.x, uv11.y));
+        _uvs.Add(new Vector2(uv11.x, uv00.y));
+        _uvs.Add(new Vector2(uv11.x, uv11.y));
+    }
 
-        _triangles.Add(_vertices.Count - 4);
-        _triangles.Add(_vertices.Count - 3);
-        _triangles.Add(_vertices.Count - 2);
-
-        _triangles.Add(_vertices.Count - 3);
-        _triangles.Add(_vertices.Count - 1);
-        _triangles.Add(_vertices.Count - 2);
+    private void AddTriangles()
+    {
+        int i = _vertices.Count;
+        _triangles.Add(i - 4);
+        _triangles.Add(i - 3);
+        _triangles.Add(i - 2);
+        _triangles.Add(i - 3);
+        _triangles.Add(i - 1);
+        _triangles.Add(i - 2);
     }
 }

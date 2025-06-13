@@ -6,6 +6,6 @@ public class MainInstaller : MonoInstaller
     {
         Container.Bind<World>().FromComponentInHierarchy().AsSingle().NonLazy();
 
-        Container.Bind<BlockDatabase>().AsSingle().NonLazy();
+        Container.Bind<BlockRegistry>().AsSingle().NonLazy();
     }
 }

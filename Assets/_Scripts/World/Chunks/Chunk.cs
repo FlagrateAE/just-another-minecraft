@@ -11,16 +11,15 @@ public class Chunk : MonoBehaviour
     private World _world;
     private ChunkMeshGenerator _generator;
 
-    private void Start()
-    {
-        _world = transform.parent.GetComponent<World>();
-        _generator = GetComponent<ChunkMeshGenerator>();
-    }
-
-    public void LoadData(Vector2Int chunkPosition, BlockId[,,] blocks)
+    public void Initialize(Vector2Int chunkPosition, BlockId[,,] blocks, BlockRegistry blockRegistry)
     {
         ChunkPosition = chunkPosition;
         Blocks = blocks;
+
+        _world = transform.parent.GetComponent<World>();
+        _generator = GetComponent<ChunkMeshGenerator>();
+
+        _generator.LoadData(blockRegistry);
     }
 
     public BlockId GetBlock(Vector3Int blockPosition)
