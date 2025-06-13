@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections.Generic;
-using Zenject;
 
 [RequireComponent(typeof(Chunk))]
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider))]
@@ -74,27 +73,6 @@ public class ChunkMeshGenerator : MonoBehaviour
             GenerateBottomSide(position, block, textureData);
     }
 
-    private void GenerateRightSide(Vector3Int blockPosition, BlockId block, BlockTextureData textureData)
-    {
-        _vertices.Add(new Vector3(1, 0, 0) + blockPosition);
-        _vertices.Add(new Vector3(1, 1, 0) + blockPosition);
-        _vertices.Add(new Vector3(1, 0, 1) + blockPosition);
-        _vertices.Add(new Vector3(1, 1, 1) + blockPosition);
-
-        AddFaceUVs(textureData.GetTexturePosition(Face.Right));
-        AddTriangles();
-    }
-
-    private void GenerateLeftSide(Vector3Int blockPosition, BlockId block, BlockTextureData textureData)
-    {
-        _vertices.Add(new Vector3(0, 0, 0) + blockPosition);
-        _vertices.Add(new Vector3(0, 0, 1) + blockPosition);
-        _vertices.Add(new Vector3(0, 1, 0) + blockPosition);
-        _vertices.Add(new Vector3(0, 1, 1) + blockPosition);
-
-        AddFaceUVs(textureData.GetTexturePosition(Face.Left));
-        AddTriangles();
-    }
 
     private void GenerateFrontSide(Vector3Int blockPosition, BlockId block, BlockTextureData textureData)
     {
@@ -103,7 +81,9 @@ public class ChunkMeshGenerator : MonoBehaviour
         _vertices.Add(new Vector3(0, 1, 1) + blockPosition);
         _vertices.Add(new Vector3(1, 1, 1) + blockPosition);
 
-        AddFaceUVs(textureData.GetTexturePosition(Face.Front));
+        var (uv00, uv11) = CalculateUVs(textureData.GetTexturePosition(Face.Front));
+
+        AddFaceUVsFlipped(uv00, uv11);
         AddTriangles();
     }
 
@@ -114,7 +94,35 @@ public class ChunkMeshGenerator : MonoBehaviour
         _vertices.Add(new Vector3(1, 0, 0) + blockPosition);
         _vertices.Add(new Vector3(1, 1, 0) + blockPosition);
 
-        AddFaceUVs(textureData.GetTexturePosition(Face.Back));
+        var (uv00, uv11) = CalculateUVs(textureData.GetTexturePosition(Face.Back));
+
+        AddFaceUVsOrtho(uv00, uv11);
+        AddTriangles();
+    }
+
+    private void GenerateLeftSide(Vector3Int blockPosition, BlockId block, BlockTextureData textureData)
+    {
+        _vertices.Add(new Vector3(0, 0, 0) + blockPosition);
+        _vertices.Add(new Vector3(0, 0, 1) + blockPosition);
+        _vertices.Add(new Vector3(0, 1, 0) + blockPosition);
+        _vertices.Add(new Vector3(0, 1, 1) + blockPosition);
+
+        var (uv00, uv11) = CalculateUVs(textureData.GetTexturePosition(Face.Left));
+
+        AddFaceUVsFlipped(uv00, uv11);
+        AddTriangles();
+    }
+
+    private void GenerateRightSide(Vector3Int blockPosition, BlockId block, BlockTextureData textureData)
+    {
+        _vertices.Add(new Vector3(1, 0, 0) + blockPosition);
+        _vertices.Add(new Vector3(1, 1, 0) + blockPosition);
+        _vertices.Add(new Vector3(1, 0, 1) + blockPosition);
+        _vertices.Add(new Vector3(1, 1, 1) + blockPosition);
+
+        var (uv00, uv11) = CalculateUVs(textureData.GetTexturePosition(Face.Right));
+
+        AddFaceUVsOrtho(uv00, uv11);
         AddTriangles();
     }
 
@@ -125,7 +133,9 @@ public class ChunkMeshGenerator : MonoBehaviour
         _vertices.Add(new Vector3(1, 1, 0) + blockPosition);
         _vertices.Add(new Vector3(1, 1, 1) + blockPosition);
 
-        AddFaceUVs(textureData.GetTexturePosition(Face.Top));
+        var (uv00, uv11) = CalculateUVs(textureData.GetTexturePosition(Face.Top));
+
+        AddFaceUVsOrtho(uv00, uv11);
         AddTriangles();
     }
 
@@ -136,21 +146,36 @@ public class ChunkMeshGenerator : MonoBehaviour
         _vertices.Add(new Vector3(0, 0, 1) + blockPosition);
         _vertices.Add(new Vector3(1, 0, 1) + blockPosition);
 
-        AddFaceUVs(textureData.GetTexturePosition(Face.Bottom));
+        var (uv00, uv11) = CalculateUVs(textureData.GetTexturePosition(Face.Bottom));
+
+        AddFaceUVsFlipped(uv00, uv11);
         AddTriangles();
     }
 
-    private void AddFaceUVs(Vector2Int texturePosition)
+    private void AddFaceUVsOrtho(Vector2 uv00, Vector2 uv11)
     {
-        float ts = 1f / BlockTextureData.AtlasColumns;
-        int maxRow = BlockTextureData.AtlasRows - 1;
-        Vector2 uv00 = new Vector2(texturePosition.x * ts, (maxRow - texturePosition.y) * ts);
-        Vector2 uv11 = uv00 + new Vector2(ts, ts);
-
         _uvs.Add(new Vector2(uv00.x, uv00.y));
         _uvs.Add(new Vector2(uv00.x, uv11.y));
         _uvs.Add(new Vector2(uv11.x, uv00.y));
         _uvs.Add(new Vector2(uv11.x, uv11.y));
+    }
+
+    private void AddFaceUVsFlipped(Vector2 uv00, Vector2 uv11)
+    {
+        _uvs.Add(new Vector2(uv11.x, uv00.y));
+        _uvs.Add(new Vector2(uv00.x, uv00.y));
+        _uvs.Add(new Vector2(uv11.x, uv11.y));
+        _uvs.Add(new Vector2(uv00.x, uv11.y));
+    }
+
+    private (Vector2, Vector2) CalculateUVs(Vector2Int texturePosition)
+    {
+        float ts = 1f / BlockTextureData.AtlasColumns;
+        int maxRow = BlockTextureData.AtlasRows - 1;
+        Vector2 uv00 = new(texturePosition.x * ts, (maxRow - texturePosition.y) * ts);
+        Vector2 uv11 = uv00 + new Vector2(ts, ts);
+
+        return (uv00, uv11);
     }
 
     private void AddTriangles()
