@@ -712,9 +712,11 @@ GameObject:
   - component: {fileID: 2138672841}
   - component: {fileID: 2138672840}
   - component: {fileID: 2138672839}
+  - component: {fileID: 2138672846}
   - component: {fileID: 2138672838}
   - component: {fileID: 2138672843}
   - component: {fileID: 2138672844}
+  - component: {fileID: 2138672845}
   m_Layer: 0
   m_Name: P L A Y E R
   m_TagString: Untagged
@@ -857,14 +859,39 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2138672837}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 84b6c5ea50fe0774ea24dd5f7c0b676d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerCamera: {fileID: 330585545}
-  _world: {fileID: 252440757}
-  _reach: 7
+  _entity: {fileID: 2138672846}
+--- !u!114 &2138672845
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2138672837}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f79cada766a89754b98db53cfee13db5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _entity: {fileID: 2138672846}
+--- !u!114 &2138672846
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2138672837}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9fafca7b081fb6e4db4c68befe2c4639, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Reach: 7
+  Head: {fileID: 330585546}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
