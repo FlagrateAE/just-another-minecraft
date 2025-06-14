@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Chunk : MonoBehaviour
@@ -14,8 +13,8 @@ public class Chunk : MonoBehaviour
     private Chunk _leftNeighbor;
     private Chunk _rightNeighbor;
 
-    private World _world;
-    private ChunkMeshGenerator _generator;
+    // private World _world;
+    public ChunkMeshGenerator MeshGenerator { get; private set; }
 
     public void Initialize(
         Vector2Int chunkPosition,
@@ -26,10 +25,10 @@ public class Chunk : MonoBehaviour
         ChunkPosition = chunkPosition;
         Blocks = blocks;
 
-        _world = transform.parent.GetComponent<World>();
-        _generator = GetComponent<ChunkMeshGenerator>();
+        // _world = transform.parent.GetComponent<World>();
+        MeshGenerator = GetComponent<ChunkMeshGenerator>();
 
-        _generator.LoadData(blockRegistry);
+        MeshGenerator.LoadData(blockRegistry);
     }
 
     public void LoadNeighbors(
@@ -96,13 +95,23 @@ public class Chunk : MonoBehaviour
     public void SetBlock(Vector3Int position, BlockId block)
     {
         Blocks[position.x, position.y, position.z] = block;
-        _generator.Regenerate();
+        MeshGenerator.Regenerate();
     }
 
     public void RemoveBlock(Vector3Int position)
     {
         Blocks[position.x, position.y, position.z] = BlockId.Air;
-        _generator.Regenerate();
+
+        if (position.x == 0 && _leftNeighbor != null)
+            _leftNeighbor.MeshGenerator.Regenerate();
+        if (position.x == Width - 1 && _rightNeighbor != null)
+            _rightNeighbor.MeshGenerator.Regenerate();
+        if (position.z == 0 && _backNeighbor != null)
+            _backNeighbor.MeshGenerator.Regenerate();
+        if (position.z == Width - 1 && _frontNeighbor != null)
+            _frontNeighbor.MeshGenerator.Regenerate();
+        
+        MeshGenerator.Regenerate();
     }
 }
 
