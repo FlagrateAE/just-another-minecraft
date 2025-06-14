@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Chunk : MonoBehaviour
@@ -8,10 +9,19 @@ public class Chunk : MonoBehaviour
     public Vector2Int ChunkPosition;
     public BlockId[,,] Blocks;
 
+    private Chunk _frontNeighbor;
+    private Chunk _backNeighbor;
+    private Chunk _leftNeighbor;
+    private Chunk _rightNeighbor;
+
     private World _world;
     private ChunkMeshGenerator _generator;
 
-    public void Initialize(Vector2Int chunkPosition, BlockId[,,] blocks, BlockRegistry blockRegistry)
+    public void Initialize(
+        Vector2Int chunkPosition,
+        BlockId[,,] blocks,
+        BlockRegistry blockRegistry
+    )
     {
         ChunkPosition = chunkPosition;
         Blocks = blocks;
@@ -20,6 +30,19 @@ public class Chunk : MonoBehaviour
         _generator = GetComponent<ChunkMeshGenerator>();
 
         _generator.LoadData(blockRegistry);
+    }
+
+    public void LoadNeighbors(
+        Chunk frontNeighbor,
+        Chunk backNeighbor,
+        Chunk leftNeighbor,
+        Chunk rightNeighbor
+    )
+    {
+        _frontNeighbor = frontNeighbor;
+        _backNeighbor = backNeighbor;
+        _leftNeighbor = leftNeighbor;
+        _rightNeighbor = rightNeighbor;
     }
 
     public BlockId GetBlock(Vector3Int blockPosition)
@@ -37,38 +60,29 @@ public class Chunk : MonoBehaviour
         {
             if (blockPosition.y < 0 || blockPosition.y >= Height) return BlockId.Air;
 
-            Vector2Int adjacentChunkPosition = ChunkPosition;
-
-            if (blockPosition.x < 0)
+            if (blockPosition.x < 0 && _leftNeighbor != null)
             {
-                adjacentChunkPosition.x--;
                 blockPosition.x += Width;
+                return _leftNeighbor.GetBlock(blockPosition);
             }
-            else if (blockPosition.x >= Width)
+            else if (blockPosition.x >= Width && _rightNeighbor != null)
             {
-                adjacentChunkPosition.x++;
                 blockPosition.x -= Width;
+                return _rightNeighbor.GetBlock(blockPosition);
             }
 
-            if (blockPosition.z < 0)
+            if (blockPosition.z < 0 && _backNeighbor != null)
             {
-                adjacentChunkPosition.y--;
                 blockPosition.z += Width;
+                return _backNeighbor.GetBlock(blockPosition);
             }
-            else if (blockPosition.z >= Width)
+            else if (blockPosition.z >= Width && _frontNeighbor != null)
             {
-                adjacentChunkPosition.y++;
                 blockPosition.z -= Width;
+                return _frontNeighbor.GetBlock(blockPosition);
             }
 
-            if (_world.Chunks.TryGetValue(adjacentChunkPosition, out Chunk adjacentChunk))
-            {
-                return adjacentChunk.GetBlock(blockPosition);
-            }
-            else
-            {
-                return BlockId.Air;
-            }
+            return BlockId.Air;
 
         }
     }

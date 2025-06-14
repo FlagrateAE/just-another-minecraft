@@ -73,7 +73,6 @@ public class ChunkMeshGenerator : MonoBehaviour
             GenerateBottomSide(position, block, textureData);
     }
 
-
     private void GenerateFrontSide(Vector3Int blockPosition, BlockId block, BlockTextureData textureData)
     {
         _vertices.Add(new Vector3(0, 0, 1) + blockPosition);

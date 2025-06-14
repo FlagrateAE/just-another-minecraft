@@ -12,35 +12,52 @@ public class World : MonoBehaviour
 
     private void Start()
     {
-        int xGlobalPosition;
-        int zGlobalPosition;
-
-        BlockId[,,] terrain;
-        Vector2Int chunkPosition;
-
+        // PASS 1: generation
         for (int x = 0; x < 10; x++)
         {
             for (int y = 0; y < 10; y++)
             {
-                xGlobalPosition = x * Chunk.Width;
-                zGlobalPosition = y * Chunk.Width;
+                int xGlobal = x * Chunk.Width;
+                int zGlobal = y * Chunk.Width;
+                Vector2Int pos = new(x, y);
 
-                chunkPosition = new(x, y);
-
-                terrain = TerrainGenerator.GenerateTerrain(xGlobalPosition, zGlobalPosition);
-
-                var chunk = Instantiate(
+                var chunkGO = Instantiate(
                     _chunkPrefab,
-                    new(xGlobalPosition, 0, zGlobalPosition),
+                    new Vector3(xGlobal, 0, zGlobal),
                     Quaternion.identity,
                     parent: transform
-                )
-                .GetComponent<Chunk>();
+                );
 
-                chunk.Initialize(chunkPosition, terrain, _blocksRegistry);
+                BlockId[,,] terrain = TerrainGenerator.GenerateTerrain(xGlobal, zGlobal);
 
-                Chunks.Add(chunk.ChunkPosition, chunk);
+                var chunk = chunkGO.GetComponent<Chunk>();
+                chunk.Initialize(
+                    pos,
+                    terrain,
+                    _blocksRegistry
+                );
+                
+                Chunks.Add(pos, chunk);
             }
+        }
+
+        // PASS 2: neighbor
+        foreach (var kvp in Chunks)
+        {
+            Vector2Int pos = kvp.Key;
+            Chunk chunk = kvp.Value;
+
+            Chunks.TryGetValue(pos + Vector2Int.up, out Chunk frontNeighbor);
+            Chunks.TryGetValue(pos + Vector2Int.down, out Chunk backNeighbor);
+            Chunks.TryGetValue(pos + Vector2Int.left, out Chunk leftNeighbor);
+            Chunks.TryGetValue(pos + Vector2Int.right, out Chunk rightNeighbor);
+
+            chunk.LoadNeighbors(
+                frontNeighbor,
+                backNeighbor,
+                leftNeighbor,
+                rightNeighbor
+            );
         }
     }
 
