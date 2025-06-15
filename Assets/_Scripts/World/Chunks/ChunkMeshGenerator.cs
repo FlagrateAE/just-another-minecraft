@@ -80,7 +80,7 @@ public class ChunkMeshGenerator : MonoBehaviour
         _vertices.Add(new Vector3(0, 1, 1) + blockPosition);
         _vertices.Add(new Vector3(1, 1, 1) + blockPosition);
 
-        var (uv00, uv11) = CalculateUVs(textureData.GetTexturePosition(Face.Front));
+        var (uv00, uv11) = CalculateUVs(textureData.Front);
 
         _uvs.Add(new Vector2(uv11.x, uv00.y));
         _uvs.Add(new Vector2(uv00.x, uv00.y));
@@ -96,7 +96,7 @@ public class ChunkMeshGenerator : MonoBehaviour
         _vertices.Add(new Vector3(1, 0, 0) + blockPosition);
         _vertices.Add(new Vector3(1, 1, 0) + blockPosition);
 
-        var (uv00, uv11) = CalculateUVs(textureData.GetTexturePosition(Face.Back));
+        var (uv00, uv11) = CalculateUVs(textureData.Back);
 
         _uvs.Add(new Vector2(uv00.x, uv00.y));
         _uvs.Add(new Vector2(uv00.x, uv11.y));
@@ -112,7 +112,7 @@ public class ChunkMeshGenerator : MonoBehaviour
         _vertices.Add(new Vector3(0, 1, 0) + blockPosition);
         _vertices.Add(new Vector3(0, 1, 1) + blockPosition);
 
-        var (uv00, uv11) = CalculateUVs(textureData.GetTexturePosition(Face.Left));
+        var (uv00, uv11) = CalculateUVs(textureData.Left);
 
         _uvs.Add(new Vector2(uv11.x, uv00.y));
         _uvs.Add(new Vector2(uv00.x, uv00.y));
@@ -128,7 +128,7 @@ public class ChunkMeshGenerator : MonoBehaviour
         _vertices.Add(new Vector3(1, 0, 1) + blockPosition);
         _vertices.Add(new Vector3(1, 1, 1) + blockPosition);
 
-        var (uv00, uv11) = CalculateUVs(textureData.GetTexturePosition(Face.Right));
+        var (uv00, uv11) = CalculateUVs(textureData.Right);
 
         _uvs.Add(new Vector2(uv00.x, uv00.y));
         _uvs.Add(new Vector2(uv00.x, uv11.y));
@@ -144,7 +144,7 @@ public class ChunkMeshGenerator : MonoBehaviour
         _vertices.Add(new Vector3(1, 1, 0) + blockPosition);
         _vertices.Add(new Vector3(1, 1, 1) + blockPosition);
 
-        var (uv00, uv11) = CalculateUVs(textureData.GetTexturePosition(Face.Top));
+        var (uv00, uv11) = CalculateUVs(textureData.Top);
 
         _uvs.Add(new Vector2(uv00.x, uv11.y));
         _uvs.Add(new Vector2(uv00.x, uv00.y));
@@ -160,7 +160,7 @@ public class ChunkMeshGenerator : MonoBehaviour
         _vertices.Add(new Vector3(0, 0, 1) + blockPosition);
         _vertices.Add(new Vector3(1, 0, 1) + blockPosition);
 
-        var (uv00, uv11) = CalculateUVs(textureData.GetTexturePosition(Face.Bottom));
+        var (uv00, uv11) = CalculateUVs(textureData.Bottom);
 
         _uvs.Add(new Vector2(uv11.x, uv00.y));
         _uvs.Add(new Vector2(uv00.x, uv00.y));

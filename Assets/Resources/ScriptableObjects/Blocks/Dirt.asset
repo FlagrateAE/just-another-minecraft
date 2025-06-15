@@ -16,9 +16,9 @@ MonoBehaviour:
   Durability: 2
   IsTransparent: 0
   TextureData:
-    Front: 0
-    Back: 0
-    Left: 0
-    Right: 0
-    Top: 0
-    Bottom: 0
+    Front: {x: 0, y: 0}
+    Back: {x: 0, y: 0}
+    Left: {x: 0, y: 0}
+    Right: {x: 0, y: 0}
+    Top: {x: 0, y: 0}
+    Bottom: {x: 0, y: 0}
