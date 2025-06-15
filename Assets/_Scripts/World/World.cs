@@ -8,7 +8,7 @@ public class World : MonoBehaviour
 
     public readonly Dictionary<Vector2Int, Chunk> Chunks = new();
 
-    [Inject] private BlockRegistry _blocksRegistry;
+    [Inject] public BlockRegistry BlockRegistry { get; private set; }
 
     private void Start()
     {
@@ -34,9 +34,9 @@ public class World : MonoBehaviour
                 chunk.Initialize(
                     pos,
                     terrain,
-                    _blocksRegistry
+                    BlockRegistry
                 );
-                
+
                 Chunks.Add(pos, chunk);
             }
         }
@@ -61,31 +61,31 @@ public class World : MonoBehaviour
         }
     }
 
-    public void PlaceBlock(Vector3Int position, BlockId block)
-    {
-        Vector2Int chunkPosition = GlobalToChunkPosition(position);
+    // public void PlaceBlock(Vector3Int position, BlockId block)
+    // {
+    //     Vector2Int chunkPosition = GlobalToChunkPosition(position);
 
-        Vector3Int localPosition = new(
-            position.x - chunkPosition.x * Chunk.Width,
-            position.y,
-            position.z - chunkPosition.y * Chunk.Width
-        );
+    //     Vector3Int localPosition = new(
+    //         position.x - chunkPosition.x * Chunk.Width,
+    //         position.y,
+    //         position.z - chunkPosition.y * Chunk.Width
+    //     );
 
-        Chunks[chunkPosition].SetBlock(localPosition, block);
-    }
+    //     Chunks[chunkPosition].PlaceBlock(localPosition, block);
+    // }
 
-    public void BreakBlock(Vector3Int position)
-    {
-        Vector2Int chunkPosition = GlobalToChunkPosition(position);
+    // public void BreakBlock(Vector3Int position)
+    // {
+    //     Vector2Int chunkPosition = GlobalToChunkPosition(position);
 
-        Vector3Int localPosition = new(
-            position.x - chunkPosition.x * Chunk.Width,
-            position.y,
-            position.z - chunkPosition.y * Chunk.Width
-        );
+    //     Vector3Int localPosition = new(
+    //         position.x - chunkPosition.x * Chunk.Width,
+    //         position.y,
+    //         position.z - chunkPosition.y * Chunk.Width
+    //     );
 
-        Chunks[chunkPosition].RemoveBlock(localPosition);
-    }
+    //     Chunks[chunkPosition].BreakBlock(localPosition);
+    // }
 
     private Vector2Int GlobalToChunkPosition(Vector3Int position)
     {

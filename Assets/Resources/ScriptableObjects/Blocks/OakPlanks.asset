@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 449c0ffb0c971634d91aa9264f7e01d2, type: 3}
   m_Name: OakPlanks
   m_EditorClassIdentifier: 
-  BlockId: 2
+  Id: 2
   Durability: 4
+  IsTransparent: 0
   TextureData:
     Front: 1
     Back: 1

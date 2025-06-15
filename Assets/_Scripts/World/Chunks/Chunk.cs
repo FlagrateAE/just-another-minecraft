@@ -13,7 +13,7 @@ public class Chunk : MonoBehaviour
     private Chunk _leftNeighbor;
     private Chunk _rightNeighbor;
 
-    // private World _world;
+    private static World _world;
     public ChunkMeshGenerator MeshGenerator { get; private set; }
 
     public void Initialize(
@@ -25,7 +25,7 @@ public class Chunk : MonoBehaviour
         ChunkPosition = chunkPosition;
         Blocks = blocks;
 
-        // _world = transform.parent.GetComponent<World>();
+        if (_world == null) _world = transform.parent.GetComponent<World>();
         MeshGenerator = GetComponent<ChunkMeshGenerator>();
 
         MeshGenerator.LoadData(blockRegistry);
@@ -92,25 +92,26 @@ public class Chunk : MonoBehaviour
         localPosition.z >= 0 && localPosition.z < Width;
 
 
-    public void SetBlock(Vector3Int position, BlockId block)
+    public void PlaceBlock(Vector3Int position, BlockId block) => SetBlock(position, block);
+
+    public void BreakBlock(Vector3Int position) => SetBlock(position, BlockId.Air, true);
+
+    private void SetBlock(Vector3Int position, BlockId block, bool isTransparent = false)
     {
         Blocks[position.x, position.y, position.z] = block;
-        MeshGenerator.Regenerate();
-    }
 
-    public void RemoveBlock(Vector3Int position)
-    {
-        Blocks[position.x, position.y, position.z] = BlockId.Air;
+        if (isTransparent || _world.BlockRegistry.GetInfo(block).IsTransparent)
+        {
+            if (position.x == 0 && _leftNeighbor != null)
+                _leftNeighbor.MeshGenerator.Regenerate();
+            if (position.x == Width - 1 && _rightNeighbor != null)
+                _rightNeighbor.MeshGenerator.Regenerate();
+            if (position.z == 0 && _backNeighbor != null)
+                _backNeighbor.MeshGenerator.Regenerate();
+            if (position.z == Width - 1 && _frontNeighbor != null)
+                _frontNeighbor.MeshGenerator.Regenerate();
+        }
 
-        if (position.x == 0 && _leftNeighbor != null)
-            _leftNeighbor.MeshGenerator.Regenerate();
-        if (position.x == Width - 1 && _rightNeighbor != null)
-            _rightNeighbor.MeshGenerator.Regenerate();
-        if (position.z == 0 && _backNeighbor != null)
-            _backNeighbor.MeshGenerator.Regenerate();
-        if (position.z == Width - 1 && _frontNeighbor != null)
-            _frontNeighbor.MeshGenerator.Regenerate();
-        
         MeshGenerator.Regenerate();
     }
 }

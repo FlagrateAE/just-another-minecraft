@@ -5,8 +5,9 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Block")]
 public class Block : ScriptableObject
 {
-    public BlockId BlockId;
+    public BlockId Id;
     public float Durability;
+    public bool IsTransparent;
     public BlockTextureData TextureData;
 }
 
@@ -46,13 +47,6 @@ public class BlockTextureData
         int yTile = (int)(index / AtlasColumns);
         return new Vector2Int(xTile, yTile);
     }
-}
-
-public enum BlockId : byte
-{
-    Air = 0,
-    Dirt = 1,
-    OakPlanks = 2
 }
 
 public enum Face : byte

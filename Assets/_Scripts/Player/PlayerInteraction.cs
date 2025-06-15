@@ -8,7 +8,7 @@ public class PlayerInteraction : MonoBehaviour
     [Header("References")]
     [SerializeField] private Entity _entity;
 
-    [Inject] private World _world;
+    // [Inject] private World _world;
 
     private void OnInteract(InputValue value)
     {
@@ -19,9 +19,14 @@ public class PlayerInteraction : MonoBehaviour
 
             if (Physics.Raycast(rayOrigin, rayDirection, out RaycastHit hitInfo, _entity.Reach))
             {
-                Vector3Int blockGlobalPosition = Vector3Int.FloorToInt(hitInfo.point + hitInfo.normal / 2);
+                if (hitInfo.transform.TryGetComponent(out Chunk chunk))
+                {
+                    Vector3Int localPosition = Vector3Int
+                    .FloorToInt(hitInfo.point + hitInfo.normal / 2)
+                    .WorldToChunkPosition();
 
-                _world.PlaceBlock(blockGlobalPosition, BlockId.OakPlanks);
+                    chunk.PlaceBlock(localPosition, BlockId.OakPlanks);
+                }
             }
         }
     }

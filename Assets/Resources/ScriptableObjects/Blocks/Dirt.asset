@@ -12,6 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 449c0ffb0c971634d91aa9264f7e01d2, type: 3}
   m_Name: Dirt
   m_EditorClassIdentifier: 
-  BlockType: 1
+  Id: 1
   Durability: 2
-  Texture: {fileID: 2800000, guid: 0655e7cd37065384baf6f4927212ddf6, type: 3}
+  IsTransparent: 0
+  TextureData:
+    Front: 0
+    Back: 0
+    Left: 0
+    Right: 0
+    Top: 0
+    Bottom: 0

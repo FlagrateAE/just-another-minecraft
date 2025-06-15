@@ -7,9 +7,9 @@ public class PlayerHitting : MonoBehaviour
 {
     [SerializeField] private Entity _entity;
 
-    [Inject] private World _world;
+    // [Inject] private World _world;
 
-    public void OnHit(InputValue value)
+    private void OnHit(InputValue value)
     {
         if (value.isPressed)
         {
@@ -18,8 +18,14 @@ public class PlayerHitting : MonoBehaviour
 
             if (Physics.Raycast(rayOrigin, rayDirection, out RaycastHit hitInfo, _entity.Reach))
             {
-                Vector3Int blockGlobalPosition = Vector3Int.FloorToInt(hitInfo.point - hitInfo.normal / 2);
-                _world.BreakBlock(blockGlobalPosition);
+                if (hitInfo.transform.TryGetComponent(out Chunk chunk))
+                {
+                    Vector3Int localPosition = Vector3Int
+                    .FloorToInt(hitInfo.point - hitInfo.normal / 2)
+                    .WorldToChunkPosition();
+
+                    chunk.BreakBlock(localPosition);
+                }
             }
         }
     }

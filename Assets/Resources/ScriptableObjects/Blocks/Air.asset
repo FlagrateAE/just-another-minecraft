@@ -12,6 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 449c0ffb0c971634d91aa9264f7e01d2, type: 3}
   m_Name: Air
   m_EditorClassIdentifier: 
-  BlockType: 0
+  Id: 0
   Durability: 0
-  Texture: {fileID: 0}
+  IsTransparent: 1
+  TextureData:
+    Front: 0
+    Back: 0
+    Left: 0
+    Right: 0
+    Top: 0
+    Bottom: 0

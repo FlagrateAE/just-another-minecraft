@@ -57,23 +57,23 @@ public class ChunkMeshGenerator : MonoBehaviour
     {
         if (block == BlockId.Air) return;
 
-        var textureData = _blockRegistry.GetTextureData(block);
+        var textureData = _blockRegistry.GetInfo(block).TextureData;
 
         if (_chunk.GetBlockChecked(position + Vector3Int.right) == BlockId.Air)
-            GenerateRightSide(position, block, textureData);
+            GenerateRightSide(position, textureData);
         if (_chunk.GetBlockChecked(position + Vector3Int.left) == BlockId.Air)
-            GenerateLeftSide(position, block, textureData);
+            GenerateLeftSide(position, textureData);
         if (_chunk.GetBlockChecked(position + Vector3Int.forward) == BlockId.Air)
-            GenerateFrontSide(position, block, textureData);
+            GenerateFrontSide(position, textureData);
         if (_chunk.GetBlockChecked(position + Vector3Int.back) == BlockId.Air)
-            GenerateBackSide(position, block, textureData);
+            GenerateBackSide(position, textureData);
         if (_chunk.GetBlockChecked(position + Vector3Int.up) == BlockId.Air)
-            GenerateTopSide(position, block, textureData);
+            GenerateTopSide(position, textureData);
         if (_chunk.GetBlockChecked(position + Vector3Int.down) == BlockId.Air)
-            GenerateBottomSide(position, block, textureData);
+            GenerateBottomSide(position, textureData);
     }
 
-    private void GenerateFrontSide(Vector3Int blockPosition, BlockId block, BlockTextureData textureData)
+    private void GenerateFrontSide(Vector3Int blockPosition, BlockTextureData textureData)
     {
         _vertices.Add(new Vector3(0, 0, 1) + blockPosition);
         _vertices.Add(new Vector3(1, 0, 1) + blockPosition);
@@ -89,7 +89,7 @@ public class ChunkMeshGenerator : MonoBehaviour
         AddTriangles();
     }
 
-    private void GenerateBackSide(Vector3Int blockPosition, BlockId block, BlockTextureData textureData)
+    private void GenerateBackSide(Vector3Int blockPosition, BlockTextureData textureData)
     {
         _vertices.Add(new Vector3(0, 0, 0) + blockPosition);
         _vertices.Add(new Vector3(0, 1, 0) + blockPosition);
@@ -105,7 +105,7 @@ public class ChunkMeshGenerator : MonoBehaviour
         AddTriangles();
     }
 
-    private void GenerateLeftSide(Vector3Int blockPosition, BlockId block, BlockTextureData textureData)
+    private void GenerateLeftSide(Vector3Int blockPosition, BlockTextureData textureData)
     {
         _vertices.Add(new Vector3(0, 0, 0) + blockPosition);
         _vertices.Add(new Vector3(0, 0, 1) + blockPosition);
@@ -121,7 +121,7 @@ public class ChunkMeshGenerator : MonoBehaviour
         AddTriangles();
     }
 
-    private void GenerateRightSide(Vector3Int blockPosition, BlockId block, BlockTextureData textureData)
+    private void GenerateRightSide(Vector3Int blockPosition, BlockTextureData textureData)
     {
         _vertices.Add(new Vector3(1, 0, 0) + blockPosition);
         _vertices.Add(new Vector3(1, 1, 0) + blockPosition);
@@ -137,7 +137,7 @@ public class ChunkMeshGenerator : MonoBehaviour
         AddTriangles();
     }
 
-    private void GenerateTopSide(Vector3Int blockPosition, BlockId block, BlockTextureData textureData)
+    private void GenerateTopSide(Vector3Int blockPosition, BlockTextureData textureData)
     {
         _vertices.Add(new Vector3(0, 1, 0) + blockPosition);
         _vertices.Add(new Vector3(0, 1, 1) + blockPosition);
@@ -153,7 +153,7 @@ public class ChunkMeshGenerator : MonoBehaviour
         AddTriangles();
     }
 
-    private void GenerateBottomSide(Vector3Int blockPosition, BlockId block, BlockTextureData textureData)
+    private void GenerateBottomSide(Vector3Int blockPosition, BlockTextureData textureData)
     {
         _vertices.Add(new Vector3(0, 0, 0) + blockPosition);
         _vertices.Add(new Vector3(1, 0, 0) + blockPosition);
