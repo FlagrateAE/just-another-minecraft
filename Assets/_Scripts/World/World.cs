@@ -61,34 +61,21 @@ public class World : MonoBehaviour
         }
     }
 
-    // public void PlaceBlock(Vector3Int position, BlockId block)
-    // {
-    //     Vector2Int chunkPosition = GlobalToChunkPosition(position);
-
-    //     Vector3Int localPosition = new(
-    //         position.x - chunkPosition.x * Chunk.Width,
-    //         position.y,
-    //         position.z - chunkPosition.y * Chunk.Width
-    //     );
-
-    //     Chunks[chunkPosition].PlaceBlock(localPosition, block);
-    // }
+    // public void TryPlaceBlock(Vector3Int position, BlockId block) { }
 
     // public void BreakBlock(Vector3Int position)
     // {
-    //     Vector2Int chunkPosition = GlobalToChunkPosition(position);
-
-    //     Vector3Int localPosition = new(
-    //         position.x - chunkPosition.x * Chunk.Width,
-    //         position.y,
-    //         position.z - chunkPosition.y * Chunk.Width
-    //     );
-
-    //     Chunks[chunkPosition].BreakBlock(localPosition);
+    //     SetBlock(position, BlockId.Air);
     // }
 
-    private Vector2Int GlobalToChunkPosition(Vector3Int position)
-    {
-        return new(position.x / Chunk.Width, position.z / Chunk.Width);
-    }
+    // private void SetBlock(Vector3Int position, BlockId block)
+    // {
+    //     Chunk chunk = Chunks[GetChunkPosition(position)];
+    //     chunk.SetBlock(position, block);
+    // }
+
+    // private Vector2Int GetChunkPosition(Vector3Int globalBlockPosition)
+    // {
+    //     return new Vector2Int(globalBlockPosition.x / Chunk.Width, globalBlockPosition.z / Chunk.Width);
+    // }
 }

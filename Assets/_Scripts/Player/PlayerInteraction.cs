@@ -23,9 +23,9 @@ public class PlayerInteraction : MonoBehaviour
                 {
                     Vector3Int localPosition = Vector3Int
                     .FloorToInt(hitInfo.point + hitInfo.normal / 2)
-                    .WorldToChunkPosition();
+                    .GlobalToLocalPosition();
 
-                    chunk.PlaceBlock(localPosition, BlockId.OakPlanks);
+                    chunk.TryPlaceBlock(localPosition, BlockId.OakPlanks);
                 }
             }
         }

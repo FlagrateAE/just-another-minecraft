@@ -22,7 +22,7 @@ public class PlayerHitting : MonoBehaviour
                 {
                     Vector3Int localPosition = Vector3Int
                     .FloorToInt(hitInfo.point - hitInfo.normal / 2)
-                    .WorldToChunkPosition();
+                    .GlobalToLocalPosition();
 
                     chunk.BreakBlock(localPosition);
                 }
