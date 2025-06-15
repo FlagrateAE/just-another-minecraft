@@ -3,9 +3,9 @@ using UnityEngine;
 
 public static class TerrainGenerator
 {
-    public static BlockType[,,] GenerateTerrain(int xOffset, int zOffset)
+    public static BlockId[,,] GenerateTerrain(int xOffset, int zOffset)
     {
-        var result = new BlockType[
+        var result = new BlockId[
             Chunk.Width,
             Chunk.Height,
             Chunk.Width
@@ -19,7 +19,7 @@ public static class TerrainGenerator
 
                 for (int y = 0; y < height; y++)
                 {
-                    result[x, y, z] = BlockType.Dirt;
+                    result[x, y, z] = BlockId.Dirt;
                 }
             }
         }

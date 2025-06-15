@@ -7,12 +7,12 @@ namespace JustAnotherMinecraft.Player
     [RequireComponent(typeof(PlayerInput))]
     public class CameraLook : MonoBehaviour
     {
-        [Header("References")] 
+        [Header("References")]
         [SerializeField] private Camera _playerCamera;
 
-        [Header("Settings")] 
+        [Header("Settings")]
         [SerializeField] private float _mouseSensitivity = 100f;
-        
+
         private float _xRotation = 0f;
         private Vector2 _mouseInput;
 
@@ -49,14 +49,13 @@ namespace JustAnotherMinecraft.Player
         {
             float mouseX = _mouseInput.x * _mouseSensitivity * Time.deltaTime;
             float mouseY = _mouseInput.y * _mouseSensitivity * Time.deltaTime;
-            
+
             transform.Rotate(Vector3.up * mouseX);
-            
+
             _xRotation -= mouseY;
             _xRotation = Mathf.Clamp(_xRotation, -90f, 90f);
-            
+
             _playerCamera.transform.localRotation = Quaternion.Euler(_xRotation, 0f, 0f);
         }
+    }
 }
-}
-
