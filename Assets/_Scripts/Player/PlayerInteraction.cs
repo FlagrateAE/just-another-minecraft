@@ -2,11 +2,11 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Zenject;
 
-[RequireComponent(typeof(Entity))]
+[RequireComponent(typeof(LivingEntity))]
 public class PlayerInteraction : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private Entity _entity;
+    [SerializeField] private LivingEntity _entity;
 
     // [Inject] private World _world;
 

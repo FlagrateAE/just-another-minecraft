@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Entity : MonoBehaviour
+public class LivingEntity : Entity
 {
     [Tooltip("Maximum distance the entity can interact from. Basically \"hands length\".")]
     public float Reach = 7f;
