@@ -61,21 +61,25 @@ public class World : MonoBehaviour
         }
     }
 
-    // public void TryPlaceBlock(Vector3Int position, BlockId block) { }
+    public void TryPlaceBlock(Vector3Int position, BlockId block)
+    {
+        Collider[] colliders = Physics.OverlapBox(position, Vector3.one / 2);
+        if (colliders.Length > 1) return;
 
-    // public void BreakBlock(Vector3Int position)
-    // {
-    //     SetBlock(position, BlockId.Air);
-    // }
+        Chunk chunk = Chunks[GetChunkPosition(position)];
+        position = position.GlobalToLocalPosition();
+        chunk.PlaceBlock(position, block);
+    }
 
-    // private void SetBlock(Vector3Int position, BlockId block)
-    // {
-    //     Chunk chunk = Chunks[GetChunkPosition(position)];
-    //     chunk.SetBlock(position, block);
-    // }
+    public void BreakBlock(Vector3Int position)
+    {
+        Chunk chunk = Chunks[GetChunkPosition(position)];
+        position = position.GlobalToLocalPosition();
+        chunk.BreakBlock(position);
+    }
 
-    // private Vector2Int GetChunkPosition(Vector3Int globalBlockPosition)
-    // {
-    //     return new Vector2Int(globalBlockPosition.x / Chunk.Width, globalBlockPosition.z / Chunk.Width);
-    // }
+    private Vector2Int GetChunkPosition(Vector3Int globalBlockPosition)
+    {
+        return new Vector2Int(globalBlockPosition.x / Chunk.Width, globalBlockPosition.z / Chunk.Width);
+    }
 }

@@ -92,11 +92,8 @@ public class Chunk : MonoBehaviour
         localPosition.y >= 0 && localPosition.y < Height &&
         localPosition.z >= 0 && localPosition.z < Width;
 
-    public void TryPlaceBlock(Vector3Int position, BlockId block)
+    public void PlaceBlock(Vector3Int position, BlockId block)
     {
-        Collider[] colliders = Physics.OverlapBox(position, Vector3.one / 2);
-        if (colliders.Length > 1) return;
-
         Blocks[position.x, position.y, position.z] = block;
         MeshGenerator.Regenerate();
     }
@@ -113,25 +110,6 @@ public class Chunk : MonoBehaviour
             _backNeighbor.MeshGenerator.Regenerate();
         if (position.z == Width - 1 && _frontNeighbor != null)
             _frontNeighbor.MeshGenerator.Regenerate();
-
-        MeshGenerator.Regenerate();
-    }
-
-    public void SetBlock(Vector3Int position, BlockId block, bool isTransparent)
-    {
-        Blocks[position.x, position.y, position.z] = block;
-
-        if (block == BlockId.Air || isTransparent)
-        {
-            if (position.x == 0 && _leftNeighbor != null)
-                _leftNeighbor.MeshGenerator.Regenerate();
-            if (position.x == Width - 1 && _rightNeighbor != null)
-                _rightNeighbor.MeshGenerator.Regenerate();
-            if (position.z == 0 && _backNeighbor != null)
-                _backNeighbor.MeshGenerator.Regenerate();
-            if (position.z == Width - 1 && _frontNeighbor != null)
-                _frontNeighbor.MeshGenerator.Regenerate();
-        }
 
         MeshGenerator.Regenerate();
     }

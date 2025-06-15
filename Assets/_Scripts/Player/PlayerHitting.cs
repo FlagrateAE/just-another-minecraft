@@ -7,7 +7,7 @@ public class PlayerHitting : MonoBehaviour
 {
     [SerializeField] private LivingEntity _entity;
 
-    // [Inject] private World _world;
+    [Inject] private World _world;
 
     private void OnHit(InputValue value)
     {
@@ -18,13 +18,12 @@ public class PlayerHitting : MonoBehaviour
 
             if (Physics.Raycast(rayOrigin, rayDirection, out RaycastHit hitInfo, _entity.Reach))
             {
-                if (hitInfo.transform.TryGetComponent(out Chunk chunk))
+                if (hitInfo.transform.TryGetComponent(out Chunk _))
                 {
-                    Vector3Int localPosition = Vector3Int
-                    .FloorToInt(hitInfo.point - hitInfo.normal / 2)
-                    .GlobalToLocalPosition();
+                    Vector3Int position = Vector3Int
+                    .FloorToInt(hitInfo.point - hitInfo.normal / 2);
 
-                    chunk.BreakBlock(localPosition);
+                    _world.BreakBlock(position);
                 }
             }
         }
