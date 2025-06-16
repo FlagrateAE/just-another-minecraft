@@ -14,6 +14,7 @@ public class PlayerInteraction : MonoBehaviour
     {
         if (value.isPressed)
         {
+            Debug.Log("Interact");
             Vector3 rayOrigin = _entity.Head.position;
             Vector3 rayDirection = _entity.Head.forward;
 

@@ -1,4 +1,5 @@
 using System;
+using JustAnotherMinecraft.GeneralSystems;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -15,6 +16,12 @@ namespace JustAnotherMinecraft.Player
 
         private float _xRotation = 0f;
         private Vector2 _mouseInput;
+        bool _isDisabled = false;
+
+        private void OnEnable()
+        {
+            SubscribeToEvents();
+        }
 
         private void Start()
         {
@@ -31,7 +38,7 @@ namespace JustAnotherMinecraft.Player
             _mouseInput = value.Get<Vector2>();
         }
 
-        private void HideCursor(bool hide)
+        public void HideCursor(bool hide)
         {
             if (hide == true)
             {
@@ -47,6 +54,7 @@ namespace JustAnotherMinecraft.Player
 
         private void ProccessLook()
         {
+            if (_isDisabled) return;
             float mouseX = _mouseInput.x * _mouseSensitivity * Time.deltaTime;
             float mouseY = _mouseInput.y * _mouseSensitivity * Time.deltaTime;
 
@@ -56,6 +64,17 @@ namespace JustAnotherMinecraft.Player
             _xRotation = Mathf.Clamp(_xRotation, -90f, 90f);
 
             _playerCamera.transform.localRotation = Quaternion.Euler(_xRotation, 0f, 0f);
+        }
+        
+        private void SubscribeToEvents()
+        {
+            GameEvents.onInventoryToggle += DisableCameraLook;
+        }
+
+        private void DisableCameraLook(bool _input)
+        {
+            _isDisabled = _input;
+            HideCursor(!_input);
         }
     }
 }

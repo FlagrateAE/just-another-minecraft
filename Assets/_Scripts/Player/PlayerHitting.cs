@@ -5,6 +5,7 @@ using Zenject;
 [RequireComponent(typeof(LivingEntity))]
 public class PlayerHitting : MonoBehaviour
 {
+    
     [SerializeField] private LivingEntity _entity;
 
     [Inject] private World _world;
@@ -13,6 +14,7 @@ public class PlayerHitting : MonoBehaviour
     {
         if (value.isPressed)
         {
+            Debug.Log("Hit");
             Vector3 rayOrigin = _entity.Head.position;
             Vector3 rayDirection = _entity.Head.forward;
 
@@ -28,5 +30,4 @@ public class PlayerHitting : MonoBehaviour
             }
         }
     }
-
 }
