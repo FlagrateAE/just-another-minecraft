@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Image = UnityEngine.UI.Image;
+using TMPro;
 
 
 namespace JustAnotherMinecraft.UI
@@ -13,9 +14,12 @@ namespace JustAnotherMinecraft.UI
     {
         [Header("References")]
         [SerializeField] private Image _image;
+        public TextMeshProUGUI CountText;
         private GridLayoutGroup _parentGrid;
-        public Item Item;
-
+        
+        
+        [HideInInspector] public Item Item;
+        [HideInInspector] public int Count = 1;
         [HideInInspector] public Transform ParentAfterDrag;
 
         private void OnEnable()
@@ -23,14 +27,18 @@ namespace JustAnotherMinecraft.UI
             GrabDependency();
         }
 
-        private void Start()
-        {
-            InitializeItem(Item);
-        }
-
         public void InitializeItem(Item newItem)
         {
+            Item = newItem;
             _image.sprite = newItem.Image;
+            RefreshCount();
+        }
+
+        public void RefreshCount()
+        {
+            CountText.text = Count.ToString();
+            bool textVisible = Count > 1;
+            CountText.gameObject.SetActive(textVisible);
         }
 
         public void OnBeginDrag(PointerEventData eventData)
