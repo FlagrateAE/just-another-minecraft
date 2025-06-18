@@ -15,7 +15,7 @@ namespace JustAnotherMinecraft.Player
 
         [Header("Settings")]
         [SerializeField] private float _moveSpeed = 5f;
-        [SerializeField] private float _jumpHeight = 1.5f;
+        [SerializeField] private float _jumpHeight = 1f;
 
         private Vector2 _movementInput;
         private Vector3 _playerVelocity;
@@ -29,6 +29,7 @@ namespace JustAnotherMinecraft.Player
         private void Update()
         {
             ProccessMovement();
+            ApplyGravity();
         }
 
         private void OnMove(InputValue value)
@@ -56,7 +57,7 @@ namespace JustAnotherMinecraft.Player
             
             movementDirection.Normalize();
             characterController.Move(movementDirection * (_moveSpeed * Time.deltaTime));
-            ApplyGravity();
+            //ApplyGravity();
         }
 
         private void ApplyGravity()

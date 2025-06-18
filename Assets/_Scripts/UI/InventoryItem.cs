@@ -14,19 +14,30 @@ namespace JustAnotherMinecraft.UI
         [Header("References")]
         [SerializeField] private Image _image;
         private GridLayoutGroup _parentGrid;
+        public Item Item;
 
-        [HideInInspector] public Transform parentAfterDrag;
+        [HideInInspector] public Transform ParentAfterDrag;
 
         private void OnEnable()
         {
             GrabDependency();
         }
 
+        private void Start()
+        {
+            InitializeItem(Item);
+        }
+
+        public void InitializeItem(Item newItem)
+        {
+            _image.sprite = newItem.Image;
+        }
+
         public void OnBeginDrag(PointerEventData eventData)
         {
             _parentGrid = transform.parent.parent.GetComponent<GridLayoutGroup>();
             _image.raycastTarget = false;
-            parentAfterDrag = transform.parent;
+            ParentAfterDrag = transform.parent;
             transform.SetParent(transform.parent.parent.parent);
             _parentGrid.enabled = false;
             transform.SetAsLastSibling();
@@ -41,7 +52,7 @@ namespace JustAnotherMinecraft.UI
         {
             _parentGrid.enabled = true;
             _image.raycastTarget = true;
-            transform.SetParent(parentAfterDrag);
+            transform.SetParent(ParentAfterDrag);
         }
 
         private void GrabDependency()

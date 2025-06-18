@@ -11,7 +11,7 @@ namespace JustAnotherMinecraft.UI
             {
                 GameObject droppedItem = eventData.pointerDrag;
                 InventoryItem inventoryItem = droppedItem.GetComponent<InventoryItem>();
-                inventoryItem.parentAfterDrag = transform;
+                inventoryItem.ParentAfterDrag = transform;
             }
         }
     }
