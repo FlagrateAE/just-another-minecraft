@@ -24,6 +24,9 @@ namespace JustAnotherMinecraft.GeneralSystems
         {
             ChangeSelectedSlot(0);
             AddItem(ItemToAdd);
+            AddItem(ItemToAdd);
+            AddItem(ItemToAdd);
+            AddItem(ItemToAdd);
         }
 
         private void ChangeSelectedSlot(int newIndex)
@@ -70,6 +73,33 @@ namespace JustAnotherMinecraft.GeneralSystems
             GameObject newItemGO = Instantiate(InventoryItemPrefab, slot.transform);
             InventoryItem inventoryItem = newItemGO.GetComponent<InventoryItem>();
             inventoryItem.InitializeItem(item);
+        }
+
+        //FOR USING ITEMS FROM INVENTORY IN THE WORLD
+        public Item GetSelectedItem(bool use)
+        {
+            InventorySlot slot = InventorySlots[_selectedSlotIndex];
+            InventoryItem itemInSlot = slot.GetComponentInChildren<InventoryItem>();
+            if (itemInSlot != null)
+            {
+                Item item = itemInSlot.Item;
+                if (use)
+                {
+                    itemInSlot.Count--;
+                    if(itemInSlot.Count <= 0)
+                    {
+                        Destroy(itemInSlot.gameObject);
+                    }
+                    else
+                    {
+                        itemInSlot.RefreshCount();
+                    }
+                }
+                
+                return itemInSlot.Item;
+            }
+
+            return null;
         }
 
         private void SubscribeToEvents()
