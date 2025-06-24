@@ -1,33 +1,55 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Zenject;
+using JustAnotherMinecraft.GeneralSystems;
 
-[RequireComponent(typeof(LivingEntity))]
-public class PlayerHitting : MonoBehaviour
+namespace JustAnotherMinecraft.Player
 {
-    
-    [SerializeField] private LivingEntity _entity;
-
-    [Inject] private World _world;
-
-    private void OnHit(InputValue value)
+    [RequireComponent(typeof(LivingEntity))]
+    public class PlayerHitting : MonoBehaviour
     {
-        if (value.isPressed)
+    
+        [SerializeField] private LivingEntity _entity;
+
+        [Inject] private World _world;
+        private bool _isEnabled = true;
+
+        private void OnEnable()
         {
-            Debug.Log("Hit");
-            Vector3 rayOrigin = _entity.Head.position;
-            Vector3 rayDirection = _entity.Head.forward;
-
-            if (Physics.Raycast(rayOrigin, rayDirection, out RaycastHit hitInfo, _entity.Reach))
+            SubscribeToEvents();
+        }
+    
+        private void OnHit(InputValue value)
+        {
+            if (value.isPressed)
             {
-                if (hitInfo.transform.TryGetComponent(out Chunk _))
-                {
-                    Vector3Int position = Vector3Int
-                    .FloorToInt(hitInfo.point - hitInfo.normal / 2);
+                if(!_isEnabled) return;
+            
+                Debug.Log("Hit");
+                Vector3 rayOrigin = _entity.Head.position;
+                Vector3 rayDirection = _entity.Head.forward;
 
-                    _world.BreakBlock(position);
+                if (Physics.Raycast(rayOrigin, rayDirection, out RaycastHit hitInfo, _entity.Reach))
+                {
+                    if (hitInfo.transform.TryGetComponent(out Chunk _))
+                    {
+                        Vector3Int position = Vector3Int
+                            .FloorToInt(hitInfo.point - hitInfo.normal / 2);
+
+                        _world.BreakBlock(position);
+                    }
                 }
             }
+        }
+    
+        private void SubscribeToEvents()
+        {
+            GameEvents.onInventoryToggle += TogglePlayerHitting;
+        }
+    
+        private void TogglePlayerHitting(bool isOpen)
+        {
+            _isEnabled = !isOpen;
         }
     }
 }
