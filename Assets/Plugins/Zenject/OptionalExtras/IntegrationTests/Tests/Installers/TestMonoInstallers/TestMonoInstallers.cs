@@ -1,5 +1,6 @@
 ﻿
 using System.Collections;
+using System.ComponentModel;
 using ModestTree;
 using UnityEngine.TestTools;
 using Zenject.Tests.Installers.MonoInstallers;
