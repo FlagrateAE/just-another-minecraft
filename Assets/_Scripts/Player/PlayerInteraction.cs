@@ -1,33 +1,55 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Zenject;
+using JustAnotherMinecraft.GeneralSystems;
 
-[RequireComponent(typeof(LivingEntity))]
-public class PlayerInteraction : MonoBehaviour
+namespace JustAnotherMinecraft.Player
 {
-    [Header("References")]
-    [SerializeField] private LivingEntity _entity;
-
-    [Inject] private World _world;
-
-    private void OnInteract(InputValue value)
+    [RequireComponent(typeof(LivingEntity))]
+    public class PlayerInteraction : MonoBehaviour
     {
-        if (value.isPressed)
+        [Header("References")]
+        [SerializeField] private LivingEntity _entity;
+
+        [Inject] private World _world;
+        private bool _isEnabled = true;
+        
+        private void OnEnable()
         {
-            Debug.Log("Interact");
-            Vector3 rayOrigin = _entity.Head.position;
-            Vector3 rayDirection = _entity.Head.forward;
+            SubscribeToEvents();
+        }
 
-            if (Physics.Raycast(rayOrigin, rayDirection, out RaycastHit hitInfo, _entity.Reach))
+        private void OnInteract(InputValue value)
+        {
+            if (value.isPressed)
             {
-                if (hitInfo.transform.TryGetComponent(out Chunk _))
-                {
-                    Vector3Int position = Vector3Int
-                    .FloorToInt(hitInfo.point + hitInfo.normal / 2);
+                if(!_isEnabled) return;
+                
+                Debug.Log("Interact");
+                Vector3 rayOrigin = _entity.Head.position;
+                Vector3 rayDirection = _entity.Head.forward;
 
-                    _world.TryPlaceBlock(position, BlockId.OakPlanks);
+                if (Physics.Raycast(rayOrigin, rayDirection, out RaycastHit hitInfo, _entity.Reach))
+                {
+                    if (hitInfo.transform.TryGetComponent(out Chunk _))
+                    {
+                        Vector3Int position = Vector3Int
+                            .FloorToInt(hitInfo.point + hitInfo.normal / 2);
+
+                        _world.TryPlaceBlock(position, BlockId.OakPlanks);
+                    }
                 }
             }
+        }
+        
+        private void SubscribeToEvents()
+        {
+            GameEvents.onInventoryToggle += TogglePlayerInteraction;
+        }
+    
+        private void TogglePlayerInteraction(bool isOpen)
+        {
+            _isEnabled = !isOpen;
         }
     }
 }
