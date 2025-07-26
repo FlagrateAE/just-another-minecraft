@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using JustAnotherMinecraft.GeneralSystems;
 
 
 namespace JustAnotherMinecraft.Player
@@ -10,18 +11,25 @@ namespace JustAnotherMinecraft.Player
     public class PlayerMovement : MonoBehaviour
     {
         [Header("References")]
-        [SerializeField] CharacterController characterController;
+        [SerializeField] private CharacterController characterController;
 
         [Header("Settings")]
         [SerializeField] private float _moveSpeed = 5f;
-        [SerializeField] private float _jumpHeight = 1.5f;
+        [SerializeField] private float _jumpHeight = 1f;
 
         private Vector2 _movementInput;
         private Vector3 _playerVelocity;
+        private bool _isDisabled;
+
+        private void OnEnable()
+        {
+            SubscribeToEvents();
+        }
 
         private void Update()
         {
             ProccessMovement();
+            ApplyGravity();
         }
 
         private void OnMove(InputValue value)
@@ -31,26 +39,41 @@ namespace JustAnotherMinecraft.Player
 
         private void OnJump(InputValue value)
         {
+            if(_isDisabled) return;
             if (value.isPressed && characterController.isGrounded)
             {
-                _playerVelocity.y = Mathf.Sqrt(2f * -Physics.gravity.y * _jumpHeight);
+                _playerVelocity.y = Mathf.Sqrt( -Physics.gravity.y * _jumpHeight);
             }
         }
 
         private void ProccessMovement()
         {
-            Vector3 movementDirection = transform.forward * _movementInput.y +
-                                        transform.right * _movementInput.x;
-
+            Vector3 movementDirection = Vector3.zero;
+            if (!_isDisabled)
+            {
+                movementDirection = transform.forward * _movementInput.y +
+                                            transform.right * _movementInput.x;
+            }
+            
             movementDirection.Normalize();
             characterController.Move(movementDirection * (_moveSpeed * Time.deltaTime));
-            ApplyGravity();
+            //ApplyGravity();
         }
 
         private void ApplyGravity()
         {
-            _playerVelocity.y += Physics.gravity.y * Time.deltaTime;
+            _playerVelocity.y += (Physics.gravity.y * Time.deltaTime) / 2f;
             characterController.Move(_playerVelocity * Time.deltaTime);
+        }
+        
+        private void SubscribeToEvents()
+        {
+            GameEvents.onInventoryToggle += DisablePlayerMovement;
+        }
+
+        private void DisablePlayerMovement(bool _input)
+        {
+            _isDisabled = _input;
         }
     }
 }
